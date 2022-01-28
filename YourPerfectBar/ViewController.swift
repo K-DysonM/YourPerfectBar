@@ -54,12 +54,9 @@ class ViewController: UITableViewController {
 	}
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		#warning("Need to set up a view controller show bar detail information")
-		if let name = bars[indexPath.row].name {
-			print("\(name) was clicked")
-		} else {
-			print("\(indexPath.row) was clicked")
-		}
+		let vc = BarDetailViewController()
+		vc.barInformation = bars[indexPath.row]
+		navigationController?.pushViewController(vc, animated: true)
 	}
 
 }
