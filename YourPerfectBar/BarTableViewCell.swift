@@ -12,10 +12,12 @@ class BarTableViewCell: UITableViewCell {
 	@IBOutlet var barImageView: UIImageView!
 	@IBOutlet private var barTitleLabel: UILabel!
 	@IBOutlet private var barSubtitleLabel: UILabel!
+	@IBOutlet private var barTypeImageView: UIImageView!
 	
 	func update(for bar: (title: String?, subtitle: String?)) {
 		barTitleLabel.text = bar.title
 		barSubtitleLabel.text = bar.subtitle
+		barTypeImageView.image = UIImage(named: "beerIcon")
 	}
 	
     override func awakeFromNib() {

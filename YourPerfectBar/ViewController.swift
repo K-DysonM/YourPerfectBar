@@ -12,7 +12,6 @@ import SDWebImage
 class ViewController: UITableViewController {
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var bars = [CDYelpBusiness]()
-	let ROW_HEIGHT: CGFloat = 100.00
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -37,8 +36,6 @@ class ViewController: UITableViewController {
 			self?.bars = businesses
 			self?.tableView.reloadData()
 		}
-		
-		tableView.rowHeight = ROW_HEIGHT
 	}
 
 	// TABLEVIEW METHODS
