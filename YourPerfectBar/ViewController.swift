@@ -12,7 +12,7 @@ import SDWebImage
 class ViewController: UITableViewController {
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var bars = [CDYelpBusiness]()
-	var crasjdlslahsHJJSDH = ""
+	let ROW_HEIGHT: CGFloat = 100.00
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -37,6 +37,8 @@ class ViewController: UITableViewController {
 			self?.bars = businesses
 			self?.tableView.reloadData()
 		}
+		
+		tableView.rowHeight = ROW_HEIGHT
 	}
 
 	// TABLEVIEW METHODS
@@ -44,14 +46,13 @@ class ViewController: UITableViewController {
 		bars.count
 	}
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		#warning("Change cell to a custom cell")
-		let cell = tableView.dequeueReusableCell(withIdentifier: "Bar", for: indexPath)
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: "BarTableViewCell", for: indexPath) as? BarTableViewCell else { return UITableViewCell() }
 		let bar = bars[indexPath.row]
-		cell.textLabel?.text = bar.name
-		cell.detailTextLabel?.text = bar.displayPhone
+		cell.update(for: (bar.name, bar.displayPhone))
 		// If not a valid url the placeholder image will be used - Without a placeholder image the imageView will show blank
-		cell.imageView?.contentMode = .scaleAspectFill
-		cell.imageView?.sd_setImage(with: bar.imageUrl, placeholderImage: UIImage(systemName: "music.house"))
+		cell.barImageView.contentMode = .scaleAspectFill
+		#warning("Look into if the preferred way is to have direct access to the imageView like this")
+		cell.barImageView.sd_setImage(with: bar.imageUrl, placeholderImage: UIImage(systemName: "music.house"))
 		return cell
 	}
 

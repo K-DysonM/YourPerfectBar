@@ -14,6 +14,7 @@
 		B286BCDB27A4538A00E37C05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B286BCDA27A4538A00E37C05 /* Assets.xcassets */; };
 		B286BCDE27A4538A00E37C05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B286BCDC27A4538A00E37C05 /* LaunchScreen.storyboard */; };
 		B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCE527A4661D00E37C05 /* Configuration.swift */; };
+		B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF027A4754700E37C05 /* BarTableViewCell.swift */; };
 		E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		B286BCDD27A4538A00E37C05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B286BCDF27A4538A00E37C05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B286BCE527A4661D00E37C05 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		B286BCF027A4754700E37C05 /* BarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarTableViewCell.swift; sourceTree = "<group>"; };
 		CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourPerfectBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -90,6 +92,7 @@
 				B286BCDC27A4538A00E37C05 /* LaunchScreen.storyboard */,
 				B286BCDF27A4538A00E37C05 /* Info.plist */,
 				B286BCE527A4661D00E37C05 /* Configuration.swift */,
+				B286BCF027A4754700E37C05 /* BarTableViewCell.swift */,
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */,
 				B286BCD627A4538800E37C05 /* ViewController.swift in Sources */,
 				B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */,
 				B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */,
