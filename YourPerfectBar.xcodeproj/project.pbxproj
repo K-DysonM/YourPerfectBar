@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,9 +13,13 @@
 		B286BCD927A4538800E37C05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B286BCD727A4538800E37C05 /* Main.storyboard */; };
 		B286BCDB27A4538A00E37C05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B286BCDA27A4538A00E37C05 /* Assets.xcassets */; };
 		B286BCDE27A4538A00E37C05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B286BCDC27A4538A00E37C05 /* LaunchScreen.storyboard */; };
+		B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCE527A4661D00E37C05 /* Configuration.swift */; };
+		E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3D05FDADB564DEF38A86D257 /* Pods-YourPerfectBar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourPerfectBar.release.xcconfig"; path = "Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar.release.xcconfig"; sourceTree = "<group>"; };
+		9D8DC50200897EDBC3610282 /* Pods-YourPerfectBar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourPerfectBar.debug.xcconfig"; path = "Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar.debug.xcconfig"; sourceTree = "<group>"; };
 		B286BCCE27A4538800E37C05 /* YourPerfectBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourPerfectBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B286BCD127A4538800E37C05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B286BCD327A4538800E37C05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -24,6 +28,8 @@
 		B286BCDA27A4538A00E37C05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B286BCDD27A4538A00E37C05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B286BCDF27A4538A00E37C05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B286BCE527A4661D00E37C05 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourPerfectBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +37,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		57C05D02C8696B0C2859E27D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AE91801BF7E2F0C3010B4C5F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9D8DC50200897EDBC3610282 /* Pods-YourPerfectBar.debug.xcconfig */,
+				3D05FDADB564DEF38A86D257 /* Pods-YourPerfectBar.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		B286BCC527A4538800E37C05 = {
 			isa = PBXGroup;
 			children = (
 				B286BCD027A4538800E37C05 /* YourPerfectBar */,
 				B286BCCF27A4538800E37C05 /* Products */,
+				AE91801BF7E2F0C3010B4C5F /* Pods */,
+				57C05D02C8696B0C2859E27D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -63,6 +89,7 @@
 				B286BCDA27A4538A00E37C05 /* Assets.xcassets */,
 				B286BCDC27A4538A00E37C05 /* LaunchScreen.storyboard */,
 				B286BCDF27A4538A00E37C05 /* Info.plist */,
+				B286BCE527A4661D00E37C05 /* Configuration.swift */,
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
@@ -74,9 +101,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B286BCE227A4538A00E37C05 /* Build configuration list for PBXNativeTarget "YourPerfectBar" */;
 			buildPhases = (
+				044A8CBF5F2BD4C8FC5CF3BA /* [CP] Check Pods Manifest.lock */,
 				B286BCCA27A4538800E37C05 /* Sources */,
 				B286BCCB27A4538800E37C05 /* Frameworks */,
 				B286BCCC27A4538800E37C05 /* Resources */,
+				400A88FB31FB8595C6ECA65A /* [CP] Embed Pods Frameworks */,
+				B286BCE727A4678B00E37C05 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -132,6 +162,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		044A8CBF5F2BD4C8FC5CF3BA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-YourPerfectBar-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		400A88FB31FB8595C6ECA65A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B286BCE727A4678B00E37C05 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B286BCCA27A4538800E37C05 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -139,6 +228,7 @@
 			files = (
 				B286BCD627A4538800E37C05 /* ViewController.swift in Sources */,
 				B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */,
+				B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */,
 				B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -283,6 +373,7 @@
 		};
 		B286BCE327A4538A00E37C05 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D8DC50200897EDBC3610282 /* Pods-YourPerfectBar.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -296,12 +387,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.KianaDyson.YourPerfectBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		B286BCE427A4538A00E37C05 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3D05FDADB564DEF38A86D257 /* Pods-YourPerfectBar.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -315,7 +407,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.KianaDyson.YourPerfectBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
