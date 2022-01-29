@@ -17,6 +17,8 @@
 		B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF027A4754700E37C05 /* BarTableViewCell.swift */; };
 		B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF227A493C600E37C05 /* BarDetailViewController.swift */; };
 		B286BCF527A49FCE00E37C05 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF427A49FCE00E37C05 /* MapViewController.swift */; };
+		B286BCFA27A4E7DD00E37C05 /* BarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF827A4E7DD00E37C05 /* BarCollectionViewCell.swift */; };
+		B286BCFB27A4E7DD00E37C05 /* BarCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */; };
 		E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +37,8 @@
 		B286BCF027A4754700E37C05 /* BarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarTableViewCell.swift; sourceTree = "<group>"; };
 		B286BCF227A493C600E37C05 /* BarDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarDetailViewController.swift; sourceTree = "<group>"; };
 		B286BCF427A49FCE00E37C05 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		B286BCF827A4E7DD00E37C05 /* BarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarCollectionViewCell.swift; sourceTree = "<group>"; };
+		B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BarCollectionViewCell.xib; sourceTree = "<group>"; };
 		CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourPerfectBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -99,6 +103,8 @@
 				B286BCF027A4754700E37C05 /* BarTableViewCell.swift */,
 				B286BCF227A493C600E37C05 /* BarDetailViewController.swift */,
 				B286BCF427A49FCE00E37C05 /* MapViewController.swift */,
+				B286BCF827A4E7DD00E37C05 /* BarCollectionViewCell.swift */,
+				B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */,
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
@@ -165,6 +171,7 @@
 			files = (
 				B286BCDE27A4538A00E37C05 /* LaunchScreen.storyboard in Resources */,
 				B286BCDB27A4538A00E37C05 /* Assets.xcassets in Resources */,
+				B286BCFB27A4E7DD00E37C05 /* BarCollectionViewCell.xib in Resources */,
 				B286BCD927A4538800E37C05 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -237,6 +244,7 @@
 			files = (
 				B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */,
 				B286BCD627A4538800E37C05 /* ViewController.swift in Sources */,
+				B286BCFA27A4E7DD00E37C05 /* BarCollectionViewCell.swift in Sources */,
 				B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */,
 				B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */,
 				B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */,
