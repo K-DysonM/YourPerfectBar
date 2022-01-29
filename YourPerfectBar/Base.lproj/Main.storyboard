@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -84,6 +85,22 @@
             </objects>
             <point key="canvasLocation" x="1942.0289855072465" y="48.883928571428569"/>
         </scene>
+        <!--Map View Controller-->
+        <scene sceneID="m2a-7T-VoF">
+            <objects>
+                <viewController id="5tF-p3-OSI" customClass="MapViewController" customModule="YourPerfectBar" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="t8H-53-ntb">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="fqA-bg-ceY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="su7-tj-aFC"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ICt-wU-4RP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1942" y="732"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="5Nx-xX-7Fb">
             <objects>
@@ -115,11 +132,31 @@
                     </tabBar>
                     <connections>
                         <segue destination="ud4-DO-ogN" kind="relationship" relationship="viewControllers" id="Pyl-Zd-pxF"/>
+                        <segue destination="4fH-xZ-mJc" kind="relationship" relationship="viewControllers" id="rjd-Lc-ozn"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cpi-Kq-DI5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="121.73913043478262" y="48.883928571428569"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8ox-jZ-oG6">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4fH-xZ-mJc" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" systemItem="search" id="MfV-yw-cJp"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="1xE-o3-zU0">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="5tF-p3-OSI" kind="relationship" relationship="rootViewController" id="W4v-Bg-JR5"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cOF-En-Bal" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1032" y="732"/>
         </scene>
     </scenes>
     <resources>

@@ -16,6 +16,7 @@
 		B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCE527A4661D00E37C05 /* Configuration.swift */; };
 		B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF027A4754700E37C05 /* BarTableViewCell.swift */; };
 		B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF227A493C600E37C05 /* BarDetailViewController.swift */; };
+		B286BCF527A49FCE00E37C05 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF427A49FCE00E37C05 /* MapViewController.swift */; };
 		E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		B286BCE527A4661D00E37C05 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		B286BCF027A4754700E37C05 /* BarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarTableViewCell.swift; sourceTree = "<group>"; };
 		B286BCF227A493C600E37C05 /* BarDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarDetailViewController.swift; sourceTree = "<group>"; };
+		B286BCF427A49FCE00E37C05 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourPerfectBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -96,6 +98,7 @@
 				B286BCE527A4661D00E37C05 /* Configuration.swift */,
 				B286BCF027A4754700E37C05 /* BarTableViewCell.swift */,
 				B286BCF227A493C600E37C05 /* BarDetailViewController.swift */,
+				B286BCF427A49FCE00E37C05 /* MapViewController.swift */,
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 				B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */,
 				B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */,
 				B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */,
+				B286BCF527A49FCE00E37C05 /* MapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
