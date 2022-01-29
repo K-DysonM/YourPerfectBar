@@ -11,7 +11,7 @@ import MapKit
 
 public class BarMKAnnotation: NSObject, MKAnnotation {
 	
-	//Per MKAnnotation Documentation: An object that adopts this protocol must implement the coordinate property. The other methods of this protocol are optional.
+	// Per MKAnnotation Documentation: An object that adopts this protocol must implement the coordinate property. The other methods of this protocol are optional.
 	// MARK: - Properties
 	public let id: String?
 	public let coordinate: CLLocationCoordinate2D

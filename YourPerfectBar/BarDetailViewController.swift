@@ -48,7 +48,7 @@ class BarDetailViewController: UIViewController {
 			 barImage.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
 			 barImage.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
 			 barImage.heightAnchor.constraint(equalToConstant: 200),
-			 barName.topAnchor.constraint(equalTo: barImage.bottomAnchor,constant: 10.00),
+			 barName.topAnchor.constraint(equalTo: barImage.bottomAnchor, constant: 10.00),
 			 barName.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
 			 barName.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
 			 barNumber.topAnchor.constraint(equalTo: barName.bottomAnchor, constant: 10.00), 
