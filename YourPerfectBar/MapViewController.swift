@@ -82,7 +82,20 @@ class MapViewController: UIViewController {
 		#warning("api calls should be moved off main thread")
 		#warning("exact api calls being made twice- make optimization to somehow share the data returned by this")
 		searchForBarsAt(coordinate: nil, location: "New York City")
+		
+		
     }
+	func updateMKAnnotations() {
+		for business in bars {
+			let latitude = business.coordinates?.latitude
+			let longitude = business.coordinates?.longitude
+			guard let latitude = latitude, let longitude = longitude else { return }
+			let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+			let barMKAnnotation = BarMKAnnotation(id: business.id, coordinate: location, name: business.name, rating: business.rating)
+			mapView.addAnnotation(barMKAnnotation)
+		}
+	}
+	
 	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
 		yelpAPIClient.searchBusinesses(
 			byTerm: "bars",
@@ -103,8 +116,8 @@ class MapViewController: UIViewController {
 			self?.bars = businesses
 			self?.collectionView.reloadData()
 			self?.collectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: false)
+			self?.updateMKAnnotations()
 		}
-		
 	}
 	
 	@objc func showListView() {
@@ -144,13 +157,24 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
 		cell.barImageView.sd_setImage(with: bar.imageUrl, placeholderImage: UIImage(systemName: "music.house"))
 		return cell
 	}
-	
-	
-	
 }
 extension MapViewController: MKMapViewDelegate {
 	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 		searchForBarsAt(coordinate: mapView.centerCoordinate, location: nil)
+	}
+	public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+		guard let annotation = annotation as? BarMKAnnotation else { return nil }
+
+		let identifier = "Bar"
+		let annotationView: MKAnnotationView
+		if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+			annotationView = existingView
+		} else {
+			annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+		}
+		annotationView.image = annotation.image
+		annotationView.canShowCallout = true
+		return annotationView
 	}
 	
 }
