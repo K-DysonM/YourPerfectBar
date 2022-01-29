@@ -26,12 +26,11 @@ class MapViewController: UIViewController {
 		view = UIView()
 		view.backgroundColor = .white
 		// MapView setup
-		mapView = MKMapView(frame: view.bounds)
+		mapView = MKMapView()
 		mapView.showsUserLocation = true
 		mapView.delegate = self
 		mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
-		mapView.setRegion(initialRegion, animated: true)
+		mapView.translatesAutoresizingMaskIntoConstraints = false
 		
 		// CollectionView setup
 		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -42,7 +41,11 @@ class MapViewController: UIViewController {
 		view.addSubview(mapView)
 		view.addSubview(collectionView)
 		NSLayoutConstraint.activate(
-			[collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.00),
+			[mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			 mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+			 mapView.rightAnchor.constraint(equalTo: view.rightAnchor),
+			 mapView.leftAnchor.constraint(equalTo: view.leftAnchor),
+			 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.00),
 			 collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
 			 collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
 			 collectionView.heightAnchor.constraint(equalToConstant: 200.00)
@@ -72,13 +75,20 @@ class MapViewController: UIViewController {
 		collectionView.delegate = self
 		collectionView.dataSource = self
 		
+		// MapView setup
+		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
+		mapView.setRegion(initialRegion, animated: true)
+		
 		#warning("api calls should be moved off main thread")
 		#warning("exact api calls being made twice- make optimization to somehow share the data returned by this")
+		searchForBarsAt(coordinate: nil, location: "New York City")
+    }
+	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
 		yelpAPIClient.searchBusinesses(
 			byTerm: "bars",
-			location: "New York City",
-			latitude: nil,
-			longitude: nil,
+			location: location,
+			latitude: coordinate?.latitude,
+			longitude: coordinate?.longitude,
 			radius: 5000,
 			categories: nil,
 			locale: .english_unitedStates,
@@ -88,15 +98,14 @@ class MapViewController: UIViewController {
 			priceTiers: nil,
 			openNow: nil,
 			openAt: nil,
-			attributes: nil) { [weak self] cdYelpSearchResponse in
+			attributes: nil) {[weak self] cdYelpSearchResponse in
 			guard let businesses = cdYelpSearchResponse?.businesses else { return }
 			self?.bars = businesses
 			self?.collectionView.reloadData()
 			self?.collectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: false)
 		}
 		
-		
-    }
+	}
 	
 	@objc func showListView() {
 		tabBarController?.selectedIndex = 0
@@ -140,5 +149,8 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
 	
 }
 extension MapViewController: MKMapViewDelegate {
+	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+		searchForBarsAt(coordinate: mapView.centerCoordinate, location: nil)
+	}
 	
 }
