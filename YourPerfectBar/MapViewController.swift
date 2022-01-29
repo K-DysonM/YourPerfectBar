@@ -172,9 +172,18 @@ extension MapViewController: MKMapViewDelegate {
 		} else {
 			annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
 		}
+		#warning("Implement a unique identifier image for annotation view")
 		annotationView.image = annotation.image
 		annotationView.canShowCallout = true
 		return annotationView
+	}
+	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+		guard let annotation = view.annotation as? BarMKAnnotation else { return }
+		guard let index = bars.firstIndex(where: { cdYelpBusiness in
+			cdYelpBusiness.id == annotation.id
+		}) else { return }
+		#warning("Bug where if animated is true it doesn't scrollToItem")
+		collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: false)
 	}
 	
 }
