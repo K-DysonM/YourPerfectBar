@@ -20,6 +20,8 @@
 		B286BCFA27A4E7DD00E37C05 /* BarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCF827A4E7DD00E37C05 /* BarCollectionViewCell.swift */; };
 		B286BCFB27A4E7DD00E37C05 /* BarCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */; };
 		B286BCFD27A50EA300E37C05 /* BarMKAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */; };
+		B286BD0727A5CEF200E37C05 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */; };
+		B286BD0927A5CF2200E37C05 /* BarsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0827A5CF2200E37C05 /* BarsModel.swift */; };
 		E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,8 @@
 		B286BCF827A4E7DD00E37C05 /* BarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarCollectionViewCell.swift; sourceTree = "<group>"; };
 		B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BarCollectionViewCell.xib; sourceTree = "<group>"; };
 		B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarMKAnnotation.swift; sourceTree = "<group>"; };
+		B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
+		B286BD0827A5CF2200E37C05 /* BarsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarsModel.swift; sourceTree = "<group>"; };
 		CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourPerfectBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -108,6 +112,8 @@
 				B286BCF827A4E7DD00E37C05 /* BarCollectionViewCell.swift */,
 				B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */,
 				B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */,
+				B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */,
+				B286BD0827A5CF2200E37C05 /* BarsModel.swift */,
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
@@ -247,6 +253,7 @@
 			files = (
 				B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */,
 				B286BCD627A4538800E37C05 /* ViewController.swift in Sources */,
+				B286BD0727A5CEF200E37C05 /* CustomTabBarController.swift in Sources */,
 				B286BCFA27A4E7DD00E37C05 /* BarCollectionViewCell.swift in Sources */,
 				B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */,
 				B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */,
@@ -254,6 +261,7 @@
 				B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */,
 				B286BCFD27A50EA300E37C05 /* BarMKAnnotation.swift in Sources */,
 				B286BCF527A49FCE00E37C05 /* MapViewController.swift in Sources */,
+				B286BD0927A5CF2200E37C05 /* BarsModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,7 +11,7 @@
         <!--View Controller-->
         <scene sceneID="fID-sZ-Na6">
             <objects>
-                <tableViewController id="ZUE-Cg-cGs" customClass="ViewController" customModule="YourPerfectBar" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ListViewController" id="ZUE-Cg-cGs" customClass="ViewController" customModule="YourPerfectBar" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="300" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="tkd-Mt-Wik">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -88,7 +88,7 @@
         <!--Map View Controller-->
         <scene sceneID="m2a-7T-VoF">
             <objects>
-                <viewController id="5tF-p3-OSI" customClass="MapViewController" customModule="YourPerfectBar" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapViewController" id="5tF-p3-OSI" customClass="MapViewController" customModule="YourPerfectBar" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="t8H-53-ntb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -120,20 +120,16 @@
             </objects>
             <point key="canvasLocation" x="1031.8840579710145" y="48.883928571428569"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Custom Tab Bar Controller-->
         <scene sceneID="GNS-p3-hfs">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="LVz-55-mhB" sceneMemberID="viewController">
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="LVz-55-mhB" customClass="CustomTabBarController" customModule="YourPerfectBar" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="5aC-xd-LwZ">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
-                    <connections>
-                        <segue destination="ud4-DO-ogN" kind="relationship" relationship="viewControllers" id="Pyl-Zd-pxF"/>
-                        <segue destination="4fH-xZ-mJc" kind="relationship" relationship="viewControllers" id="rjd-Lc-ozn"/>
-                    </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cpi-Kq-DI5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -13,6 +13,7 @@ import CDYelpFusionKit
 class MapViewController: UIViewController {
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var bars = [CDYelpBusiness]()
+	var barsModel: BarsModel!
 	
 	private(set) var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
 	let screenSize: CGRect = UIScreen.main.bounds
@@ -86,7 +87,7 @@ class MapViewController: UIViewController {
 		
     }
 	func updateMKAnnotations() {
-		for business in bars {
+		for business in barsModel.bars {
 			let latitude = business.coordinates?.latitude
 			let longitude = business.coordinates?.longitude
 			guard let latitude = latitude, let longitude = longitude else { return }
@@ -113,9 +114,10 @@ class MapViewController: UIViewController {
 			openAt: nil,
 			attributes: nil) {[weak self] cdYelpSearchResponse in
 			guard let businesses = cdYelpSearchResponse?.businesses else { return }
-			self?.bars = businesses
+			self?.barsModel.bars = businesses
 			self?.collectionView.reloadData()
-			self?.collectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: false)
+			let middleIndex = businesses.count/2
+			self?.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
 			self?.updateMKAnnotations()
 		}
 	}
@@ -146,11 +148,11 @@ extension MapViewController: CLLocationManagerDelegate {
 }
 extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return bars.count
+		return barsModel.bars.count
 	}
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Bar", for: indexPath) as? BarCollectionViewCell else { return UICollectionViewCell() }
-		let bar = bars[indexPath.row]
+		let bar = barsModel.bars[indexPath.row]
 		cell.barTitleLabel.text = bar.name
 		cell.barImageView.contentMode = .scaleAspectFill
 		#warning("Look into if the preferred way is to have direct access to the imageView like this")
@@ -160,6 +162,7 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
 }
 extension MapViewController: MKMapViewDelegate {
 	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+		collectionView.isHidden = true
 		searchForBarsAt(coordinate: mapView.centerCoordinate, location: nil)
 	}
 	public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -179,10 +182,11 @@ extension MapViewController: MKMapViewDelegate {
 	}
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		guard let annotation = view.annotation as? BarMKAnnotation else { return }
-		guard let index = bars.firstIndex(where: { cdYelpBusiness in
+		guard let index = barsModel.bars.firstIndex(where: { cdYelpBusiness in
 			cdYelpBusiness.id == annotation.id
 		}) else { return }
 		#warning("Bug where if animated is true it doesn't scrollToItem")
+		collectionView.isHidden = false
 		collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: false)
 	}
 	

@@ -12,11 +12,15 @@ import SDWebImage
 class ViewController: UITableViewController {
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var bars = [CDYelpBusiness]()
+	var barsModel: BarsModel!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view.
 		#warning("api calls should be moved off main thread")
+		tableView.refreshControl = UIRefreshControl()
+		tableView.refreshControl?.addTarget(self, action: #selector(updateTableView), for: .valueChanged)
+		
 		yelpAPIClient.searchBusinesses(
 			byTerm: "bars",
 			location: "New York City",
@@ -33,18 +37,23 @@ class ViewController: UITableViewController {
 			openAt: nil,
 			attributes: nil) { [weak self] cdYelpSearchResponse in
 			guard let businesses = cdYelpSearchResponse?.businesses else { return }
-			self?.bars = businesses
+			self?.barsModel.bars = businesses
 			self?.tableView.reloadData()
 		}
+	}
+	@objc func updateTableView() {
+		tableView.reloadData()
+		tableView.refreshControl?.endRefreshing()
+		
 	}
 
 	// TABLEVIEW METHODS
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		bars.count
+		barsModel.bars.count
 	}
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: "BarTableViewCell", for: indexPath) as? BarTableViewCell else { return UITableViewCell() }
-		let bar = bars[indexPath.row]
+		let bar = barsModel.bars[indexPath.row]
 		cell.update(for: (bar.name, bar.displayPhone))
 		// If not a valid url the placeholder image will be used - Without a placeholder image the imageView will show blank
 		cell.barImageView.contentMode = .scaleAspectFill
@@ -55,7 +64,7 @@ class ViewController: UITableViewController {
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let vc = BarDetailViewController()
-		vc.barInformation = bars[indexPath.row]
+		vc.barInformation = barsModel.bars[indexPath.row]
 		navigationController?.pushViewController(vc, animated: true)
 	}
 
