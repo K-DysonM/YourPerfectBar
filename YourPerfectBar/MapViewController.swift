@@ -118,7 +118,7 @@ class MapViewController: UIViewController {
 			radius: 5000,
 			categories: nil,
 			locale: .english_unitedStates,
-			limit: 20,
+			limit: 50,
 			offset: nil,
 			sortBy: .bestMatch,
 			priceTiers: nil,
@@ -200,6 +200,7 @@ extension MapViewController: MKMapViewDelegate {
 		}) else { return }
 		#warning("Bug where if animated is true it doesn't scrollToItem")
 		collectionView.isHidden = false
+		print(index)
 		collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: false)
 	}
 	
