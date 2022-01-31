@@ -12,7 +12,7 @@ import CDYelpFusionKit
 
 class MapViewController: UIViewController {
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
-	var bars = [CDYelpBusiness]()
+	var barAnnotations = [BarMKAnnotation]()
 	var barsModel: BarsModel!
 	
 	private(set) var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
@@ -94,6 +94,18 @@ class MapViewController: UIViewController {
 			let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
 			let barMKAnnotation = BarMKAnnotation(id: business.id, coordinate: location, name: business.name, rating: business.rating)
 			mapView.addAnnotation(barMKAnnotation)
+			barAnnotations.append(barMKAnnotation)
+		}
+	}
+	#warning("This removes all annotations- instead remove annotations that arent in the mapView ")
+	func removeMKAnnotations() {
+		let rect = mapView.visibleMapRect
+		let mapViewAnnotations = mapView.annotations(in: rect)
+		for annotation in mapView.annotations {
+			guard let annotationAnyHashable = annotation as? AnyHashable else { return }
+			if !mapViewAnnotations.contains(annotationAnyHashable) {
+				mapView.removeAnnotation(annotation)
+			}
 		}
 	}
 	
@@ -119,6 +131,7 @@ class MapViewController: UIViewController {
 			let middleIndex = businesses.count/2
 			self?.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
 			self?.updateMKAnnotations()
+			self?.removeMKAnnotations()
 		}
 	}
 	
