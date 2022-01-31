@@ -19,7 +19,9 @@ class MapViewController: UIViewController {
 	let screenSize: CGRect = UIScreen.main.bounds
 	var locationManager: CLLocationManager?
 	var mapView: MKMapView!
+	var button: UIButton!
 	var collectionView: UICollectionView!
+	
 	
 	let INITIAL_COORDINATE: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.7580, longitude: -73.9855)
 	
@@ -40,8 +42,16 @@ class MapViewController: UIViewController {
 		collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
 		collectionView.translatesAutoresizingMaskIntoConstraints = false
 		
+		// Button setup
+		button = UIButton(type: .system)
+		button.setImage(UIImage(systemName: "x.square"), for: .normal)
+		button.backgroundColor = .white
+		button.addTarget(self, action: #selector(removeMKPolygons), for: .touchDown)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		
 		view.addSubview(mapView)
 		view.addSubview(collectionView)
+		view.addSubview(button)
 		NSLayoutConstraint.activate(
 			[mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			 mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -50,7 +60,11 @@ class MapViewController: UIViewController {
 			 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.00),
 			 collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
 			 collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
-			 collectionView.heightAnchor.constraint(equalToConstant: 200.00)
+			 collectionView.heightAnchor.constraint(equalToConstant: 200.00),
+			 button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			 button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+			 button.heightAnchor.constraint(equalToConstant: 50.00),
+			 button.widthAnchor.constraint(equalToConstant: 50.00)
 			]
 		)
 	}
@@ -58,7 +72,7 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // Navigation bar setup
 		let searchBar = UISearchBar()
 		searchBar.placeholder = "Search A Bar..."
 		navigationItem.titleView = searchBar
@@ -66,7 +80,7 @@ class MapViewController: UIViewController {
 	
 		let locationButton = UIBarButtonItem(image: UIImage(systemName: "location.fill.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
 		let searchDrawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(setDrawOnMap))
-		navigationItem.rightBarButtonItems = [locationButton,searchDrawButton]
+		navigationItem.rightBarButtonItems = [locationButton, searchDrawButton]
 		// Location setup
 		locationManager = CLLocationManager()
 		locationManager?.delegate = self
@@ -87,8 +101,6 @@ class MapViewController: UIViewController {
 		
 		#warning("api calls should be moved off main thread")
 		searchForBarsAt(coordinate: nil, location: "New York City")
-		
-		
     }
 	func updateMKAnnotations() {
 		for business in barsModel.bars {
@@ -111,9 +123,11 @@ class MapViewController: UIViewController {
 			}
 		}
 	}
+	@objc func removeMKPolygons() {
+		mapView.removeOverlays(mapView.overlays)
+	}
 	func presentMKPolygons(polygons: [MKPolygon]) {
 		for polygon in polygons {
-			print("addOverlay")
 			mapView.addOverlay(polygon)
 		}
 	}
@@ -231,10 +245,7 @@ extension MapViewController: MKMapViewDelegate {
 			polygonView.lineWidth = 5
 			polygonView.fillColor = .lightGray.withAlphaComponent(0.3)
 			return polygonView
-		} else if overlay is MKCircle{
-
 		}
-		
 		return MKPolylineRenderer(overlay: overlay)
 	}
 	
