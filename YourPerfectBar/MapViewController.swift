@@ -14,6 +14,7 @@ class MapViewController: UIViewController {
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var barAnnotations = [BarMKAnnotation]()
 	var barsModel: BarsModel!
+	var points = [CLLocationCoordinate2D]()
 	
 	private(set) var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
 	let screenSize: CGRect = UIScreen.main.bounds
@@ -62,8 +63,9 @@ class MapViewController: UIViewController {
 		searchBar.placeholder = "Search A Bar..."
 		navigationItem.titleView = searchBar
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "List", style: .plain, target: self, action: #selector(showListView))
-		navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "location.fill.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
-		
+	
+		let locationButton = UIBarButtonItem(image: UIImage(systemName: "location.fill.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
+		let searchDrawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(setDrawOnMap))
 		// Location setup
 		locationManager = CLLocationManager()
 		locationManager?.delegate = self
@@ -79,6 +81,7 @@ class MapViewController: UIViewController {
 		// MapView setup
 		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
 		mapView.setRegion(initialRegion, animated: true)
+		mapView.isUserInteractionEnabled = false
 		
 		#warning("api calls should be moved off main thread")
 		#warning("exact api calls being made twice- make optimization to somehow share the data returned by this")
@@ -86,6 +89,26 @@ class MapViewController: UIViewController {
 		
 		
     }
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		mapView.removeOverlays(mapView.overlays)
+		if let touch = touches.first {
+			let coordinate = mapView.convert(touch.location(in: mapView),      toCoordinateFrom: mapView)
+			points.append(coordinate)
+		}
+	}
+	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+		if let touch = touches.first {
+			let coordinate = mapView.convert(touch.location(in: mapView),       toCoordinateFrom: mapView)
+			points.append(coordinate)
+			let polyline = MKPolyline(coordinates: points, count: points.count)
+			mapView.addOverlay(polyline)
+		}
+	}
+	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		let polygon = MKPolygon(coordinates: &points, count: points.count)
+		mapView.addOverlay(polygon)
+		points = [] // Reset points
+	}
 	func updateMKAnnotations() {
 		for business in barsModel.bars {
 			let latitude = business.coordinates?.latitude
@@ -149,6 +172,8 @@ class MapViewController: UIViewController {
 			ac.addAction(UIAlertAction(title: "OK", style: .default))
 			present(ac, animated: true)
 		}
+	}
+	@objc func setDrawOnMap(){
 		
 	}
 }
@@ -203,5 +228,19 @@ extension MapViewController: MKMapViewDelegate {
 		print(index)
 		collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: false)
 	}
+	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+		if overlay is MKPolyline {
+			let polylineRenderer = MKPolylineRenderer(overlay: overlay)
+			polylineRenderer.strokeColor = .orange
+			polylineRenderer.lineWidth = 5
+			return polylineRenderer
+		} else if overlay is MKPolygon {
+			let polygonView = MKPolygonRenderer(overlay: overlay)
+			polygonView.fillColor = .magenta
+			return polygonView
+		}
+		return MKPolylineRenderer(overlay: overlay)
+	}
+	
 	
 }
