@@ -14,7 +14,6 @@ class MapViewController: UIViewController {
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var barAnnotations = [BarMKAnnotation]()
 	var barsModel: BarsModel!
-	var points = [CLLocationCoordinate2D]()
 	
 	private(set) var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
 	let screenSize: CGRect = UIScreen.main.bounds
@@ -23,6 +22,14 @@ class MapViewController: UIViewController {
 	var collectionView: UICollectionView!
 	
 	let INITIAL_COORDINATE: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.7580, longitude: -73.9855)
+	
+	//DRAWING VARIABLES
+	private var currentPath = UIBezierPath()
+	private var currentLayer = CAShapeLayer()
+	var points = [CLLocationCoordinate2D]()
+	var lastPoint = CGPoint.zero
+	var firstPoint = CGPoint.zero
+	var drawMode = false
 	
 	override func loadView() {
 		view = UIView()
@@ -66,6 +73,7 @@ class MapViewController: UIViewController {
 	
 		let locationButton = UIBarButtonItem(image: UIImage(systemName: "location.fill.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
 		let searchDrawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(setDrawOnMap))
+		navigationItem.rightBarButtonItems = [locationButton,searchDrawButton]
 		// Location setup
 		locationManager = CLLocationManager()
 		locationManager?.delegate = self
@@ -81,7 +89,10 @@ class MapViewController: UIViewController {
 		// MapView setup
 		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
 		mapView.setRegion(initialRegion, animated: true)
-		mapView.isUserInteractionEnabled = false
+		mapView.isUserInteractionEnabled = true
+		
+		// Drawing setup
+
 		
 		#warning("api calls should be moved off main thread")
 		#warning("exact api calls being made twice- make optimization to somehow share the data returned by this")
@@ -90,24 +101,48 @@ class MapViewController: UIViewController {
 		
     }
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		mapView.removeOverlays(mapView.overlays)
-		if let touch = touches.first {
-			let coordinate = mapView.convert(touch.location(in: mapView),      toCoordinateFrom: mapView)
-			points.append(coordinate)
+		if drawMode {
+			guard let touch = touches.first else { return }
+			// Initialized for new drawing
+			lastPoint = touch.location(in: view)
+			firstPoint = lastPoint
+			currentLayer = CAShapeLayer()
+			currentPath = UIBezierPath()
+			view.layer.addSublayer(currentLayer)
+		} else {
+			super.touchesBegan(touches, with: event)
 		}
 	}
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-		if let touch = touches.first {
-			let coordinate = mapView.convert(touch.location(in: mapView),       toCoordinateFrom: mapView)
-			points.append(coordinate)
-			let polyline = MKPolyline(coordinates: points, count: points.count)
-			mapView.addOverlay(polyline)
+		if drawMode {
+			guard let touch = touches.first else { return }
+			let currentPoint = touch.location(in: view)
+			drawLine(from: lastPoint, to: currentPoint)
+			lastPoint = currentPoint
+		} else {
+			super.touchesBegan(touches, with: event)
 		}
 	}
+	
+	func drawLine(from fromPoint: CGPoint, to toPoint: CGPoint) {
+		currentPath.move(to: fromPoint)
+		currentPath.addLine(to: toPoint)
+		currentLayer.strokeColor = UIColor(named: "HunterGreen")?.withAlphaComponent(0.7).cgColor
+		currentLayer.fillColor = nil
+		currentLayer.lineWidth = 5.0
+		currentLayer.lineCap = .round
+		currentLayer.lineJoin = .round
+		currentLayer.path = currentPath.cgPath
+	}
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-		let polygon = MKPolygon(coordinates: &points, count: points.count)
-		mapView.addOverlay(polygon)
-		points = [] // Reset points
+		// Close the drawing path by connecting the end to the beginning
+		if drawMode {
+			currentPath.addLine(to: firstPoint)
+			currentLayer.path = currentPath.cgPath
+			
+		} else {
+			super.touchesBegan(touches, with: event)
+		}
 	}
 	func updateMKAnnotations() {
 		for business in barsModel.bars {
@@ -120,7 +155,6 @@ class MapViewController: UIViewController {
 			barAnnotations.append(barMKAnnotation)
 		}
 	}
-	#warning("This removes all annotations- instead remove annotations that arent in the mapView ")
 	func removeMKAnnotations() {
 		let rect = mapView.visibleMapRect
 		let mapViewAnnotations = mapView.annotations(in: rect)
@@ -141,7 +175,7 @@ class MapViewController: UIViewController {
 			radius: 5000,
 			categories: nil,
 			locale: .english_unitedStates,
-			limit: 50,
+			limit: 5,
 			offset: nil,
 			sortBy: .bestMatch,
 			priceTiers: nil,
@@ -173,8 +207,18 @@ class MapViewController: UIViewController {
 			present(ac, animated: true)
 		}
 	}
-	@objc func setDrawOnMap(){
-		
+	@objc func setDrawOnMap() {
+		// Exit or enter drawMode
+		drawMode = !drawMode
+		//If in draw mode then remove uitouches to mapview else mapview receives uitouches
+		if drawMode {
+			let ac = UIAlertController(title: "Entering Draw Mode", message: "Draw a shape around an area to search", preferredStyle: .alert)
+			ac.addAction(UIAlertAction(title: "Start", style: .default))
+			present(ac, animated: true)
+			mapView.isUserInteractionEnabled = false
+		} else {
+			mapView.isUserInteractionEnabled = true
+		}
 	}
 }
 extension MapViewController: CLLocationManagerDelegate {
@@ -231,14 +275,20 @@ extension MapViewController: MKMapViewDelegate {
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		if overlay is MKPolyline {
 			let polylineRenderer = MKPolylineRenderer(overlay: overlay)
-			polylineRenderer.strokeColor = .orange
+			polylineRenderer.strokeColor = UIColor(named: "HunterGreen")
 			polylineRenderer.lineWidth = 5
+			print("returned")
 			return polylineRenderer
 		} else if overlay is MKPolygon {
 			let polygonView = MKPolygonRenderer(overlay: overlay)
-			polygonView.fillColor = .magenta
+			polygonView.strokeColor = UIColor(named: "HunterGreen")
+			polygonView.lineWidth = 5
+			polygonView.fillColor = .lightGray.withAlphaComponent(0.3)
 			return polygonView
+		} else if overlay is MKCircle{
+
 		}
+		
 		return MKPolylineRenderer(overlay: overlay)
 	}
 	
