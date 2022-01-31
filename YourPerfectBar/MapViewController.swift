@@ -23,14 +23,6 @@ class MapViewController: UIViewController {
 	
 	let INITIAL_COORDINATE: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.7580, longitude: -73.9855)
 	
-	//DRAWING VARIABLES
-	private var currentPath = UIBezierPath()
-	private var currentLayer = CAShapeLayer()
-	var points = [CLLocationCoordinate2D]()
-	var lastPoint = CGPoint.zero
-	var firstPoint = CGPoint.zero
-	var drawMode = false
-	
 	override func loadView() {
 		view = UIView()
 		view.backgroundColor = .white
@@ -47,6 +39,7 @@ class MapViewController: UIViewController {
 		layout.scrollDirection = .horizontal
 		collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
 		collectionView.translatesAutoresizingMaskIntoConstraints = false
+		
 		view.addSubview(mapView)
 		view.addSubview(collectionView)
 		NSLayoutConstraint.activate(
@@ -90,60 +83,13 @@ class MapViewController: UIViewController {
 		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
 		mapView.setRegion(initialRegion, animated: true)
 		mapView.isUserInteractionEnabled = true
-		
-		// Drawing setup
 
 		
 		#warning("api calls should be moved off main thread")
-		#warning("exact api calls being made twice- make optimization to somehow share the data returned by this")
 		searchForBarsAt(coordinate: nil, location: "New York City")
 		
 		
     }
-	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		if drawMode {
-			guard let touch = touches.first else { return }
-			// Initialized for new drawing
-			lastPoint = touch.location(in: view)
-			firstPoint = lastPoint
-			currentLayer = CAShapeLayer()
-			currentPath = UIBezierPath()
-			view.layer.addSublayer(currentLayer)
-		} else {
-			super.touchesBegan(touches, with: event)
-		}
-	}
-	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-		if drawMode {
-			guard let touch = touches.first else { return }
-			let currentPoint = touch.location(in: view)
-			drawLine(from: lastPoint, to: currentPoint)
-			lastPoint = currentPoint
-		} else {
-			super.touchesBegan(touches, with: event)
-		}
-	}
-	
-	func drawLine(from fromPoint: CGPoint, to toPoint: CGPoint) {
-		currentPath.move(to: fromPoint)
-		currentPath.addLine(to: toPoint)
-		currentLayer.strokeColor = UIColor(named: "HunterGreen")?.withAlphaComponent(0.7).cgColor
-		currentLayer.fillColor = nil
-		currentLayer.lineWidth = 5.0
-		currentLayer.lineCap = .round
-		currentLayer.lineJoin = .round
-		currentLayer.path = currentPath.cgPath
-	}
-	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-		// Close the drawing path by connecting the end to the beginning
-		if drawMode {
-			currentPath.addLine(to: firstPoint)
-			currentLayer.path = currentPath.cgPath
-			
-		} else {
-			super.touchesBegan(touches, with: event)
-		}
-	}
 	func updateMKAnnotations() {
 		for business in barsModel.bars {
 			let latitude = business.coordinates?.latitude
@@ -163,6 +109,12 @@ class MapViewController: UIViewController {
 			if !mapViewAnnotations.contains(annotationAnyHashable) {
 				mapView.removeAnnotation(annotation)
 			}
+		}
+	}
+	func presentMKPolygons(polygons: [MKPolygon]) {
+		for polygon in polygons {
+			print("addOverlay")
+			mapView.addOverlay(polygon)
 		}
 	}
 	
@@ -208,17 +160,10 @@ class MapViewController: UIViewController {
 		}
 	}
 	@objc func setDrawOnMap() {
-		// Exit or enter drawMode
-		drawMode = !drawMode
-		//If in draw mode then remove uitouches to mapview else mapview receives uitouches
-		if drawMode {
-			let ac = UIAlertController(title: "Entering Draw Mode", message: "Draw a shape around an area to search", preferredStyle: .alert)
-			ac.addAction(UIAlertAction(title: "Start", style: .default))
-			present(ac, animated: true)
-			mapView.isUserInteractionEnabled = false
-		} else {
-			mapView.isUserInteractionEnabled = true
-		}
+		// Enter drawMode
+		let vc = DrawMapViewController()
+		vc.region = mapView.region
+		navigationController?.pushViewController(vc, animated: true)
 	}
 }
 extension MapViewController: CLLocationManagerDelegate {
@@ -280,6 +225,7 @@ extension MapViewController: MKMapViewDelegate {
 			print("returned")
 			return polylineRenderer
 		} else if overlay is MKPolygon {
+			print("MKPolygonRenderer")
 			let polygonView = MKPolygonRenderer(overlay: overlay)
 			polygonView.strokeColor = UIColor(named: "HunterGreen")
 			polygonView.lineWidth = 5
