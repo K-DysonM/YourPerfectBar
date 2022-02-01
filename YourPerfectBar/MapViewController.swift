@@ -98,11 +98,10 @@ class MapViewController: UIViewController {
 		mapView.setRegion(initialRegion, animated: true)
 		mapView.isUserInteractionEnabled = true
 
-		
-		#warning("api calls should be moved off main thread")
-		searchForBarsAt(coordinate: nil, location: "New York City")
+		self.searchForBarsAt(coordinate: nil, location: "New York City")
     }
-	func updateMKAnnotations() {
+	// Adds annotations to the map
+	func addMKAnnotations() {
 		for business in barsModel.bars {
 			let latitude = business.coordinates?.latitude
 			let longitude = business.coordinates?.longitude
@@ -113,55 +112,84 @@ class MapViewController: UIViewController {
 			barAnnotations.append(barMKAnnotation)
 		}
 	}
+	// Removes annotations from the map
 	func removeMKAnnotations() {
-		let rect = mapView.visibleMapRect
-		let mapViewAnnotations = mapView.annotations(in: rect)
+		mapView.removeAnnotations(barAnnotations)
+	}
+	// Removes annotations not within the drawn search area
+	func removeOutsideAnnotations() {
+		var contains = false
 		for annotation in mapView.annotations {
-			guard let annotationAnyHashable = annotation as? AnyHashable else { return }
-			if !mapViewAnnotations.contains(annotationAnyHashable) {
+			for overlay in mapView.overlays {
+				if let polygon = overlay as? MKPolygon {
+					contains = polygon.contain(coor: annotation.coordinate)
+				}
+			}
+			if !contains {
 				mapView.removeAnnotation(annotation)
 			}
 		}
 	}
-	@objc func removeMKPolygons() {
+	
+	@objc
+	func removeMKPolygons() {
 		mapView.removeOverlays(mapView.overlays)
 	}
-	func presentMKPolygons(polygons: [MKPolygon]) {
+	func addMKPolygons(polygons: [MKPolygon]) {
 		for polygon in polygons {
 			mapView.addOverlay(polygon)
 		}
+		removeOutsideAnnotations()
 	}
 	
 	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
-		yelpAPIClient.searchBusinesses(
-			byTerm: "bars",
-			location: location,
-			latitude: coordinate?.latitude,
-			longitude: coordinate?.longitude,
-			radius: 5000,
-			categories: nil,
-			locale: .english_unitedStates,
-			limit: 5,
-			offset: nil,
-			sortBy: .bestMatch,
-			priceTiers: nil,
-			openNow: nil,
-			openAt: nil,
-			attributes: nil) {[weak self] cdYelpSearchResponse in
-			guard let businesses = cdYelpSearchResponse?.businesses else { return }
-			self?.barsModel.bars = businesses
-			self?.collectionView.reloadData()
-			let middleIndex = businesses.count/2
-			self?.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
-			self?.updateMKAnnotations()
-			self?.removeMKAnnotations()
+		DispatchQueue.global().async {
+			self.yelpAPIClient.searchBusinesses(
+				byTerm: "bars",
+				location: location,
+				latitude: coordinate?.latitude,
+				longitude: coordinate?.longitude,
+				radius: 5000,
+				categories: nil,
+				locale: .english_unitedStates,
+				limit: 50,
+				offset: nil,
+				sortBy: .bestMatch,
+				priceTiers: nil,
+				openNow: nil,
+				openAt: nil,
+				attributes: nil) {[weak self] cdYelpSearchResponse in
+				guard let businesses = cdYelpSearchResponse?.businesses else { return }
+				self?.barsModel.bars = []
+				// ONLY SHOW ANNOTATIONS IF WITHIN THE FRAME -
+				for business in businesses {
+					if let latitude = business.coordinates?.latitude, let longitude = business.coordinates?.longitude {
+						let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+						if let contains = self?.mapView.visibleMapRect.contains(MKMapPoint(coordinate)) {
+							if contains {
+								self?.barsModel.bars.append(business)
+							}
+						}
+					}
+				}
+				let middleIndex = businesses.count/2
+				
+				DispatchQueue.main.async {
+					self?.collectionView.reloadData()
+					self?.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
+					self?.removeMKAnnotations()
+					self?.addMKAnnotations()
+				}
+			}
 		}
 	}
 	
-	@objc func showListView() {
+	@objc
+	func showListView() {
 		tabBarController?.selectedIndex = 0
 	}
-	@objc func setMapToCurrentLocation() {
+	@objc
+	func setMapToCurrentLocation() {
 		if locationManager?.authorizationStatus == .authorizedAlways {
 			if let coordinate = locationManager?.location?.coordinate {
 				let coordinateRegion = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
@@ -173,8 +201,9 @@ class MapViewController: UIViewController {
 			present(ac, animated: true)
 		}
 	}
-	@objc func setDrawOnMap() {
-		// Enter drawMode
+	// NAVIGATE USER TO DRAW MODE
+	@objc
+	func setDrawOnMap() {
 		let vc = DrawMapViewController()
 		vc.region = mapView.region
 		navigationController?.pushViewController(vc, animated: true)
@@ -187,13 +216,16 @@ extension MapViewController: CLLocationManagerDelegate {
 		}
 	}
 }
+// COLLECTIONVIEW METHODS
 extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		return barsModel.bars.count
 	}
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Bar", for: indexPath) as? BarCollectionViewCell else { return UICollectionViewCell() }
-		let bar = barsModel.bars[indexPath.row]
+		guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Bar", for: indexPath) as? BarCollectionViewCell else {
+			fatalError("BarCollectionViewCell not properly initialized")
+		}
+		let bar = barsModel.bars[indexPath.item]
 		cell.barTitleLabel.text = bar.name
 		cell.barImageView.contentMode = .scaleAspectFill
 		#warning("Look into if the preferred way is to have direct access to the imageView like this")
@@ -201,6 +233,7 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
 		return cell
 	}
 }
+// MAPVIEW METHODS
 extension MapViewController: MKMapViewDelegate {
 	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 		collectionView.isHidden = true
@@ -208,7 +241,7 @@ extension MapViewController: MKMapViewDelegate {
 	}
 	public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		guard let annotation = annotation as? BarMKAnnotation else { return nil }
-
+		
 		let identifier = "Bar"
 		let annotationView: MKAnnotationView
 		if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
@@ -232,22 +265,26 @@ extension MapViewController: MKMapViewDelegate {
 		collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: false)
 	}
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-		if overlay is MKPolyline {
-			let polylineRenderer = MKPolylineRenderer(overlay: overlay)
-			polylineRenderer.strokeColor = UIColor(named: "HunterGreen")
-			polylineRenderer.lineWidth = 5
-			print("returned")
-			return polylineRenderer
-		} else if overlay is MKPolygon {
-			print("MKPolygonRenderer")
+		if overlay is MKPolygon {
 			let polygonView = MKPolygonRenderer(overlay: overlay)
 			polygonView.strokeColor = UIColor(named: "HunterGreen")
 			polygonView.lineWidth = 5
 			polygonView.fillColor = .lightGray.withAlphaComponent(0.3)
+			
 			return polygonView
 		}
 		return MKPolylineRenderer(overlay: overlay)
 	}
-	
-	
+}
+extension MKPolygon {
+	func contain(coor: CLLocationCoordinate2D) -> Bool {
+		let polygonRenderer = MKPolygonRenderer(polygon: self)
+		let currentMapPoint: MKMapPoint = MKMapPoint(coor)
+		let polygonViewPoint: CGPoint = polygonRenderer.point(for: currentMapPoint)
+		if polygonRenderer.path == nil {
+			return false
+		} else {
+			return polygonRenderer.path.contains(polygonViewPoint)
+		}
+	}
 }

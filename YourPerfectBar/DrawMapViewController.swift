@@ -47,9 +47,7 @@ class DrawMapViewController: UIViewController {
 				mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
 			]
 		)
-		guard let region = region else { return dismiss(animated: false) {
-			print("INVALID INITIALIZATION")
-		} }
+		guard let region = region else { dismiss(animated: false); return }
 		mapView.setRegion(region, animated: true)
 		let ac = UIAlertController(title: "Entering Draw Mode", message: "Draw a shape around an area to search", preferredStyle: .alert)
 		ac.addAction(UIAlertAction(title: "Start", style: .default))
@@ -99,7 +97,7 @@ class DrawMapViewController: UIViewController {
 		guard let currentIndex = navigationController?.viewControllers.count else { navigationController?.popViewController(animated: true); return }
 		// Getting the view controller below this in the stack
 		if let present = navigationController?.viewControllers[currentIndex-2] as? MapViewController {
-			present.presentMKPolygons(polygons: polygons)
+			present.addMKPolygons(polygons: polygons)
 		}
 		navigationController?.popViewController(animated: true)
 	}
