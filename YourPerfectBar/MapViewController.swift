@@ -100,46 +100,52 @@ class MapViewController: UIViewController {
 
 		self.searchForBarsAt(coordinate: nil, location: "New York City")
     }
-	// Adds annotations to the map
-	func addMKAnnotations() {
-		for business in barsModel.bars {
-			let latitude = business.coordinates?.latitude
-			let longitude = business.coordinates?.longitude
-			guard let latitude = latitude, let longitude = longitude else { return }
-			let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-			let barMKAnnotation = BarMKAnnotation(id: business.id, coordinate: location, name: business.name, rating: business.rating)
-			mapView.addAnnotation(barMKAnnotation)
-			barAnnotations.append(barMKAnnotation)
-		}
-	}
-	// Removes annotations from the map
-	func removeMKAnnotations() {
-		mapView.removeAnnotations(barAnnotations)
-	}
-	// Removes annotations not within the drawn search area
-	func removeOutsideAnnotations() {
-		var contains = false
-		for annotation in mapView.annotations {
-			for overlay in mapView.overlays {
-				if let polygon = overlay as? MKPolygon {
-					contains = polygon.contain(coor: annotation.coordinate)
-				}
-			}
-			if !contains {
-				mapView.removeAnnotation(annotation)
-			}
-		}
+	/// Adds an array of bars as BarMKAnnotations to the map view
+	func addMKAnnotations(forBars list: [CDYelpBusiness]?) {
+		guard let list = list else { return }
+		let newAnnotations = list.compactMap { convertToBarMKAnnotation(from: $0) }
+		mapView.addAnnotations(newAnnotations)
+		barAnnotations += newAnnotations
 	}
 	
+	func convertToBarMKAnnotation(from business: CDYelpBusiness) -> BarMKAnnotation? {
+		let latitude = business.coordinates?.latitude
+		let longitude = business.coordinates?.longitude
+		guard let latitude = latitude, let longitude = longitude  else { return nil }
+		let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+		let barMKAnnotation = BarMKAnnotation(id: business.id, coordinate: location, name: business.name, rating: business.rating)
+		return barMKAnnotation
+	}
+	
+	
+	/// Removes an array of BarMKAnnotation objects from the map view.
+	func removeMKAnnotations(forBars list: [BarMKAnnotation]?) {
+		guard let list = list else { return }
+		mapView.removeAnnotations(list)
+	}
+	/// Removes an array of BarMKAnnotation objects outside an array of MKPolygon objects from the map view.
+	func removeMKAnnotations(forBars bars: [BarMKAnnotation], outside polygons: [MKPolygon] ) {
+		/// A list of bars not within any of the given map polygons
+		let barsOutside = bars.filter { (bar) in
+			for polygon in polygons {
+				if polygon.contain(coor: bar.coordinate) {
+					return false
+				}
+			}
+			return true
+		}
+		mapView.removeAnnotations(barsOutside)
+	}
+	
+	/// Removes MKPolygon objects from the map view.
 	@objc
 	func removeMKPolygons() {
-		mapView.removeOverlays(mapView.overlays)
+		mapView.removeOverlays(mapView.overlays.compactMap { $0 as? MKPolygon })
 	}
+	/// Adds an array of MKPolygon objects to the map view
 	func addMKPolygons(polygons: [MKPolygon]) {
-		for polygon in polygons {
-			mapView.addOverlay(polygon)
-		}
-		removeOutsideAnnotations()
+		mapView.addOverlays(polygons)
+		removeMKAnnotations(forBars: barAnnotations, outside: polygons)
 	}
 	
 	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
@@ -177,8 +183,8 @@ class MapViewController: UIViewController {
 				DispatchQueue.main.async {
 					self?.collectionView.reloadData()
 					self?.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
-					self?.removeMKAnnotations()
-					self?.addMKAnnotations()
+					self?.removeMKAnnotations(forBars: self?.barAnnotations)
+					self?.addMKAnnotations(forBars: self?.barsModel.bars)
 				}
 			}
 		}
@@ -235,6 +241,7 @@ extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSourc
 }
 // MAPVIEW METHODS
 extension MapViewController: MKMapViewDelegate {
+	#warning("Should actually search for bars but keep in mind the overlays. So don't search for bars in those overlays. This could be a parameter that can be nil in the case you don't need to search within an overlay ")
 	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 		collectionView.isHidden = true
 		searchForBarsAt(coordinate: mapView.centerCoordinate, location: nil)
@@ -274,17 +281,5 @@ extension MapViewController: MKMapViewDelegate {
 			return polygonView
 		}
 		return MKPolylineRenderer(overlay: overlay)
-	}
-}
-extension MKPolygon {
-	func contain(coor: CLLocationCoordinate2D) -> Bool {
-		let polygonRenderer = MKPolygonRenderer(polygon: self)
-		let currentMapPoint: MKMapPoint = MKMapPoint(coor)
-		let polygonViewPoint: CGPoint = polygonRenderer.point(for: currentMapPoint)
-		if polygonRenderer.path == nil {
-			return false
-		} else {
-			return polygonRenderer.path.contains(polygonViewPoint)
-		}
 	}
 }
