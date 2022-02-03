@@ -22,6 +22,11 @@
 		B286BCFD27A50EA300E37C05 /* BarMKAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */; };
 		B286BD0727A5CEF200E37C05 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */; };
 		B286BD0927A5CF2200E37C05 /* BarsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0827A5CF2200E37C05 /* BarsModel.swift */; };
+<<<<<<< HEAD
+=======
+		B286BD0D27A7AE8700E37C05 /* DrawMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */; };
+		B286BDDF27AAFB6F00E37C05 /* MapKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */; };
+>>>>>>> parent of 3a3897e... Merge pull request #1 from K-DysonM/Subbranch_DrawRegion_CollectionViewAnimation
 		E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +50,11 @@
 		B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarMKAnnotation.swift; sourceTree = "<group>"; };
 		B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		B286BD0827A5CF2200E37C05 /* BarsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarsModel.swift; sourceTree = "<group>"; };
+<<<<<<< HEAD
+=======
+		B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawMapViewController.swift; sourceTree = "<group>"; };
+		B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapKit+Extensions.swift"; sourceTree = "<group>"; };
+>>>>>>> parent of 3a3897e... Merge pull request #1 from K-DysonM/Subbranch_DrawRegion_CollectionViewAnimation
 		CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourPerfectBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -114,6 +124,11 @@
 				B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */,
 				B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */,
 				B286BD0827A5CF2200E37C05 /* BarsModel.swift */,
+<<<<<<< HEAD
+=======
+				B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */,
+				B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */,
+>>>>>>> parent of 3a3897e... Merge pull request #1 from K-DysonM/Subbranch_DrawRegion_CollectionViewAnimation
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
