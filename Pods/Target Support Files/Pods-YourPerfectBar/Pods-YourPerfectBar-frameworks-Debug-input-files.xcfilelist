@@ -1,0 +1,4 @@
+${PODS_ROOT}/Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/CDYelpFusionKit/CDYelpFusionKit.framework
+${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework
