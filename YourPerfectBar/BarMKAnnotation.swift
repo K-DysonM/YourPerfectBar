@@ -23,7 +23,6 @@ public class BarMKAnnotation: NSObject, MKAnnotation {
 	}
 	
 	// MARK: - Object Lifecycle
-	#warning("Consider making id not optional as it is needed when annotation is selected by user")
 	public init(
 		id: String?,
 		coordinate: CLLocationCoordinate2D,
