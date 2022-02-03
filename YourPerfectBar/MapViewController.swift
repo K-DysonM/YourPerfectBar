@@ -99,6 +99,7 @@ class MapViewController: UIViewController {
 		mapView.delegate = self
 
 		barsModel.bars = []
+		dataSource.objects = []
 		searchForBarsAt(coordinate: INITIAL_COORDINATE, location: nil)
     }
 	/// Adds an array of bars as BarMKAnnotations to the map view
@@ -172,6 +173,7 @@ class MapViewController: UIViewController {
 				attributes: nil) {[weak self] cdYelpSearchResponse in
 				guard let businesses = cdYelpSearchResponse?.businesses else { return }
 				self?.barsModel.bars = []
+				self?.dataSource.objects = []
 				// ONLY SHOW ANNOTATIONS IF WITHIN THE FRAME -
 				for business in businesses {
 					
