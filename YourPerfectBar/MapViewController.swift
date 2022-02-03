@@ -29,7 +29,6 @@ class MapViewController: UIViewController {
 		// MapView setup
 		mapView = MKMapView()
 		mapView.showsUserLocation = true
-		mapView.delegate = self
 		mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		
@@ -79,6 +78,7 @@ class MapViewController: UIViewController {
 		// MapView setup
 		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
 		mapView.setRegion(initialRegion, animated: true)
+		mapView.delegate = self
 		
 		#warning("api calls should be moved off main thread")
 		#warning("exact api calls being made twice- make optimization to somehow share the data returned by this")
