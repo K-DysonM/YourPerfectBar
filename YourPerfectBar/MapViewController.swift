@@ -20,10 +20,12 @@ class MapViewController: UIViewController {
 	var locationManager: CLLocationManager?
 	var mapView: MKMapView!
 	var button: UIButton!
-	var collectionView: UICollectionView!
-	
+	var collectionView: BarsCollectionView!
+	var isShown = true
 	
 	let INITIAL_COORDINATE: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.7580, longitude: -73.9855)
+	
+	var dataSource = BarCollectionDataSource()
 	
 	override func loadView() {
 		view = UIView()
@@ -31,15 +33,15 @@ class MapViewController: UIViewController {
 		// MapView setup
 		mapView = MKMapView()
 		mapView.showsUserLocation = true
-		mapView.delegate = self
 		mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		
 		// CollectionView setup
+		
 		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 		layout.itemSize = CGSize(width: 300, height: 200)
 		layout.scrollDirection = .horizontal
-		collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+		collectionView = BarsCollectionView(frame: CGRect.zero, collectionViewLayout: layout)
 		collectionView.translatesAutoresizingMaskIntoConstraints = false
 		
 		// Button setup
@@ -67,6 +69,7 @@ class MapViewController: UIViewController {
 			 button.widthAnchor.constraint(equalToConstant: 50.00)
 			]
 		)
+		print("viewDidLoad \(barAnnotations)")
 	}
 	
     override func viewDidLoad() {
@@ -87,23 +90,23 @@ class MapViewController: UIViewController {
 		locationManager?.requestAlwaysAuthorization()
 		
 		// Collection View setup
-		collectionView.backgroundColor = .clear
-		collectionView.register(UINib(nibName: "BarCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "Bar")
-		collectionView.showsHorizontalScrollIndicator = false
-		collectionView.delegate = self
-		collectionView.dataSource = self
+		collectionView.dataSource = dataSource
 		
 		// MapView setup
 		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
 		mapView.setRegion(initialRegion, animated: true)
 		mapView.isUserInteractionEnabled = true
+		mapView.delegate = self
 
-		self.searchForBarsAt(coordinate: nil, location: "New York City")
+		barsModel.bars = []
+		searchForBarsAt(coordinate: INITIAL_COORDINATE, location: nil)
     }
 	/// Adds an array of bars as BarMKAnnotations to the map view
 	func addMKAnnotations(forBars list: [CDYelpBusiness]?) {
 		guard let list = list else { return }
+		print("This is forBars: \(list)")
 		let newAnnotations = list.compactMap { convertToBarMKAnnotation(from: $0) }
+		print("This is newAnnotations: \(newAnnotations)")
 		mapView.addAnnotations(newAnnotations)
 		barAnnotations += newAnnotations
 	}
@@ -122,6 +125,7 @@ class MapViewController: UIViewController {
 	func removeMKAnnotations(forBars list: [BarMKAnnotation]?) {
 		guard let list = list else { return }
 		mapView.removeAnnotations(list)
+		
 	}
 	/// Removes an array of BarMKAnnotation objects outside an array of MKPolygon objects from the map view.
 	func removeMKAnnotations(forBars bars: [BarMKAnnotation], outside polygons: [MKPolygon] ) {
@@ -150,6 +154,7 @@ class MapViewController: UIViewController {
 	
 	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
 		DispatchQueue.global().async {
+			print("FIRST CALL")
 			self.yelpAPIClient.searchBusinesses(
 				byTerm: "bars",
 				location: location,
@@ -158,7 +163,7 @@ class MapViewController: UIViewController {
 				radius: 5000,
 				categories: nil,
 				locale: .english_unitedStates,
-				limit: 50,
+				limit: 5,
 				offset: nil,
 				sortBy: .bestMatch,
 				priceTiers: nil,
@@ -169,10 +174,12 @@ class MapViewController: UIViewController {
 				self?.barsModel.bars = []
 				// ONLY SHOW ANNOTATIONS IF WITHIN THE FRAME -
 				for business in businesses {
+					
 					if let latitude = business.coordinates?.latitude, let longitude = business.coordinates?.longitude {
 						let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
 						if let contains = self?.mapView.visibleMapRect.contains(MKMapPoint(coordinate)) {
 							if contains {
+								self?.dataSource.objects.append(business)
 								self?.barsModel.bars.append(business)
 							}
 						}
@@ -184,6 +191,7 @@ class MapViewController: UIViewController {
 					self?.collectionView.reloadData()
 					self?.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
 					self?.removeMKAnnotations(forBars: self?.barAnnotations)
+					self?.barAnnotations = []
 					self?.addMKAnnotations(forBars: self?.barsModel.bars)
 				}
 			}
@@ -215,6 +223,8 @@ class MapViewController: UIViewController {
 		navigationController?.pushViewController(vc, animated: true)
 	}
 }
+
+
 extension MapViewController: CLLocationManagerDelegate {
 	func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
 		if manager.authorizationStatus == .authorizedAlways {
@@ -222,28 +232,12 @@ extension MapViewController: CLLocationManagerDelegate {
 		}
 	}
 }
-// COLLECTIONVIEW METHODS
-extension MapViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return barsModel.bars.count
-	}
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Bar", for: indexPath) as? BarCollectionViewCell else {
-			fatalError("BarCollectionViewCell not properly initialized")
-		}
-		let bar = barsModel.bars[indexPath.item]
-		cell.barTitleLabel.text = bar.name
-		cell.barImageView.contentMode = .scaleAspectFill
-		#warning("Look into if the preferred way is to have direct access to the imageView like this")
-		cell.barImageView.sd_setImage(with: bar.imageUrl, placeholderImage: UIImage(systemName: "music.house"))
-		return cell
-	}
-}
+
 // MAPVIEW METHODS
 extension MapViewController: MKMapViewDelegate {
 	#warning("Should actually search for bars but keep in mind the overlays. So don't search for bars in those overlays. This could be a parameter that can be nil in the case you don't need to search within an overlay ")
 	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-		collectionView.isHidden = true
+		collectionView.hide()
 		searchForBarsAt(coordinate: mapView.centerCoordinate, location: nil)
 	}
 	public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -261,15 +255,17 @@ extension MapViewController: MKMapViewDelegate {
 		annotationView.canShowCallout = true
 		return annotationView
 	}
+	
+	
+	
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		guard let annotation = view.annotation as? BarMKAnnotation else { return }
 		guard let index = barsModel.bars.firstIndex(where: { cdYelpBusiness in
 			cdYelpBusiness.id == annotation.id
 		}) else { return }
-		#warning("Bug where if animated is true it doesn't scrollToItem")
-		collectionView.isHidden = false
-		print(index)
-		collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: false)
+		collectionView.show()
+		
+		collectionView.animateToItem(at: IndexPath(row: index, section: 0))
 	}
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		if overlay is MKPolygon {
