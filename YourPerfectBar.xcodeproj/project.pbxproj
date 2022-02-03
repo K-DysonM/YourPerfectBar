@@ -22,6 +22,10 @@
 		B286BCFD27A50EA300E37C05 /* BarMKAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */; };
 		B286BD0727A5CEF200E37C05 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */; };
 		B286BD0927A5CF2200E37C05 /* BarsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0827A5CF2200E37C05 /* BarsModel.swift */; };
+		B286BD0D27A7AE8700E37C05 /* DrawMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */; };
+		B286BDDF27AAFB6F00E37C05 /* MapKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */; };
+		B286BE3827AC344100E37C05 /* BarsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BE3727AC344100E37C05 /* BarsCollectionView.swift */; };
+		B286BE3A27AC36B800E37C05 /* BarCollectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BE3927AC36B800E37C05 /* BarCollectionDataSource.swift */; };
 		E1E119607E614A2A100CAE7A /* Pods_YourPerfectBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +49,10 @@
 		B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarMKAnnotation.swift; sourceTree = "<group>"; };
 		B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		B286BD0827A5CF2200E37C05 /* BarsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarsModel.swift; sourceTree = "<group>"; };
+		B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawMapViewController.swift; sourceTree = "<group>"; };
+		B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapKit+Extensions.swift"; sourceTree = "<group>"; };
+		B286BE3727AC344100E37C05 /* BarsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarsCollectionView.swift; sourceTree = "<group>"; };
+		B286BE3927AC36B800E37C05 /* BarCollectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarCollectionDataSource.swift; sourceTree = "<group>"; };
 		CCE80B94CBF2A451700B8433 /* Pods_YourPerfectBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourPerfectBar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -114,6 +122,10 @@
 				B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */,
 				B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */,
 				B286BD0827A5CF2200E37C05 /* BarsModel.swift */,
+				B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */,
+				B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */,
+				B286BE3727AC344100E37C05 /* BarsCollectionView.swift */,
+				B286BE3927AC36B800E37C05 /* BarCollectionDataSource.swift */,
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
@@ -251,12 +263,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B286BE3A27AC36B800E37C05 /* BarCollectionDataSource.swift in Sources */,
 				B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */,
 				B286BCD627A4538800E37C05 /* ViewController.swift in Sources */,
 				B286BD0727A5CEF200E37C05 /* CustomTabBarController.swift in Sources */,
 				B286BCFA27A4E7DD00E37C05 /* BarCollectionViewCell.swift in Sources */,
 				B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */,
+				B286BD0D27A7AE8700E37C05 /* DrawMapViewController.swift in Sources */,
+				B286BDDF27AAFB6F00E37C05 /* MapKit+Extensions.swift in Sources */,
 				B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */,
+				B286BE3827AC344100E37C05 /* BarsCollectionView.swift in Sources */,
 				B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */,
 				B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */,
 				B286BCFD27A50EA300E37C05 /* BarMKAnnotation.swift in Sources */,
