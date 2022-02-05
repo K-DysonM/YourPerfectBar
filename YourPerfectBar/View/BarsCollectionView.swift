@@ -23,6 +23,7 @@ class BarsCollectionView: UICollectionView {
 		// Collection View setup
 		translatesAutoresizingMaskIntoConstraints = false
 		backgroundColor = .clear
+		contentInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
 		register(UINib(nibName: "BarCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "Bar")
 		showsHorizontalScrollIndicator = false
 	}
@@ -42,7 +43,13 @@ class BarsCollectionView: UICollectionView {
 	func animateToItem(at index: IndexPath) {
 		// This is where we will implement the cell growing larger if its being shown
 		#warning("Bug where if animated is true it doesn't scrollToItem")
+		
 		scrollToItem(at: index, at: .centeredHorizontally, animated: false)
+		
+		#warning("cellForItem only works on visible cells so it wont have access to those not currently shown on the screen")
+		guard let cell = cellForItem(at: index) as? BarCollectionViewCell else { return }
+		cell.transformToLarge()
+		
 	}
 
 }

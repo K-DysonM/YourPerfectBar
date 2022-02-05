@@ -20,3 +20,10 @@ extension MKPolygon {
 		}
 	}
 }
+extension MKMapRect{
+	func contain(latitude: Double?, longitude: Double?) -> Bool{
+		guard let latitude = latitude, let longitude = longitude else { return false }
+		let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+		return contains(MKMapPoint(coordinate))
+	}
+}

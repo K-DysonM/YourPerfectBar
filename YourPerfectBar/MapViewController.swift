@@ -18,12 +18,10 @@ class MapViewController: UIViewController {
 	private(set) var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
 	let screenSize: CGRect = UIScreen.main.bounds
 	var locationManager: CLLocationManager?
-	var mapView: MKMapView!
+	var mapView: BarsMapView!
 	var button: UIButton!
 	var collectionView: BarsCollectionView!
 	var isShown = true
-	
-	let INITIAL_COORDINATE: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.7580, longitude: -73.9855)
 	
 	var dataSource = BarCollectionDataSource()
 	
@@ -31,15 +29,14 @@ class MapViewController: UIViewController {
 		view = UIView()
 		view.backgroundColor = .white
 		// MapView setup
-		mapView = MKMapView()
-		mapView.showsUserLocation = true
-		mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		mapView = BarsMapView()
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		
 		// CollectionView setup
-		
 		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 		layout.itemSize = CGSize(width: 300, height: 200)
+		layout.minimumInteritemSpacing = 5
+		layout.minimumLineSpacing = 5
 		layout.scrollDirection = .horizontal
 		collectionView = BarsCollectionView(frame: CGRect.zero, collectionViewLayout: layout)
 		collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +45,7 @@ class MapViewController: UIViewController {
 		button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "x.square"), for: .normal)
 		button.backgroundColor = .white
-		button.addTarget(self, action: #selector(removeMKPolygons), for: .touchDown)
+		button.addTarget(mapView, action: #selector(mapView.removeMKPolygons), for: .touchDown)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		
 		view.addSubview(mapView)
@@ -59,17 +56,16 @@ class MapViewController: UIViewController {
 			 mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 			 mapView.rightAnchor.constraint(equalTo: view.rightAnchor),
 			 mapView.leftAnchor.constraint(equalTo: view.leftAnchor),
-			 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10.00),
+			 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5.00),
 			 collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
 			 collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
-			 collectionView.heightAnchor.constraint(equalToConstant: 200.00),
+			 collectionView.heightAnchor.constraint(equalToConstant: 250.00),
 			 button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			 button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
 			 button.heightAnchor.constraint(equalToConstant: 50.00),
 			 button.widthAnchor.constraint(equalToConstant: 50.00)
 			]
 		)
-		print("viewDidLoad \(barAnnotations)")
 	}
 	
     override func viewDidLoad() {
@@ -91,66 +87,20 @@ class MapViewController: UIViewController {
 		
 		// Collection View setup
 		collectionView.dataSource = dataSource
+		collectionView.delegate = dataSource
 		
 		// MapView setup
-		let initialRegion = MKCoordinateRegion(center: INITIAL_COORDINATE, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
-		mapView.setRegion(initialRegion, animated: true)
-		mapView.isUserInteractionEnabled = true
 		mapView.delegate = self
+		mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
 
 		barsModel.bars = []
 		dataSource.objects = []
-		searchForBarsAt(coordinate: INITIAL_COORDINATE, location: nil)
+		searchForBarsAt(coordinate: mapView.INITIAL_COORDINATE, location: nil)
     }
-	/// Adds an array of bars as BarMKAnnotations to the map view
-	func addMKAnnotations(forBars list: [CDYelpBusiness]?) {
-		guard let list = list else { return }
-		print("This is forBars: \(list)")
-		let newAnnotations = list.compactMap { convertToBarMKAnnotation(from: $0) }
-		print("This is newAnnotations: \(newAnnotations)")
-		mapView.addAnnotations(newAnnotations)
-		barAnnotations += newAnnotations
-	}
-	
-	func convertToBarMKAnnotation(from business: CDYelpBusiness) -> BarMKAnnotation? {
-		let latitude = business.coordinates?.latitude
-		let longitude = business.coordinates?.longitude
-		guard let latitude = latitude, let longitude = longitude  else { return nil }
-		let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-		let barMKAnnotation = BarMKAnnotation(id: business.id, coordinate: location, name: business.name, rating: business.rating)
-		return barMKAnnotation
-	}
-	
-	
-	/// Removes an array of BarMKAnnotation objects from the map view.
-	func removeMKAnnotations(forBars list: [BarMKAnnotation]?) {
-		guard let list = list else { return }
-		mapView.removeAnnotations(list)
-		
-	}
-	/// Removes an array of BarMKAnnotation objects outside an array of MKPolygon objects from the map view.
-	func removeMKAnnotations(forBars bars: [BarMKAnnotation], outside polygons: [MKPolygon] ) {
-		/// A list of bars not within any of the given map polygons
-		let barsOutside = bars.filter { (bar) in
-			for polygon in polygons {
-				if polygon.contain(coor: bar.coordinate) {
-					return false
-				}
-			}
-			return true
-		}
-		mapView.removeAnnotations(barsOutside)
-	}
-	
-	/// Removes MKPolygon objects from the map view.
-	@objc
-	func removeMKPolygons() {
-		mapView.removeOverlays(mapView.overlays.compactMap { $0 as? MKPolygon })
-	}
 	/// Adds an array of MKPolygon objects to the map view
 	func addMKPolygons(polygons: [MKPolygon]) {
 		mapView.addOverlays(polygons)
-		removeMKAnnotations(forBars: barAnnotations, outside: polygons)
+		mapView.removeMKAnnotations(forBars: barAnnotations, outside: polygons)
 	}
 	
 	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
@@ -164,7 +114,7 @@ class MapViewController: UIViewController {
 				radius: 5000,
 				categories: nil,
 				locale: .english_unitedStates,
-				limit: 5,
+				limit: 15,
 				offset: nil,
 				sortBy: .bestMatch,
 				priceTiers: nil,
@@ -172,29 +122,26 @@ class MapViewController: UIViewController {
 				openAt: nil,
 				attributes: nil) {[weak self] cdYelpSearchResponse in
 				guard let businesses = cdYelpSearchResponse?.businesses else { return }
-				self?.barsModel.bars = []
-				self?.dataSource.objects = []
+				guard let self = self else { return }
+				self.barsModel.bars = []
+				self.dataSource.objects = []
 				// ONLY SHOW ANNOTATIONS IF WITHIN THE FRAME -
 				for business in businesses {
-					
-					if let latitude = business.coordinates?.latitude, let longitude = business.coordinates?.longitude {
-						let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-						if let contains = self?.mapView.visibleMapRect.contains(MKMapPoint(coordinate)) {
-							if contains {
-								self?.dataSource.objects.append(business)
-								self?.barsModel.bars.append(business)
-							}
-						}
+					let inside = self.mapView.visibleMapRect.contain(latitude: business.coordinates?.latitude, longitude: business.coordinates?.longitude)
+					if inside {
+						self.dataSource.objects.append(business)
+						self.barsModel.bars.append(business)
 					}
 				}
 				let middleIndex = businesses.count/2
 				
 				DispatchQueue.main.async {
-					self?.collectionView.reloadData()
-					self?.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
-					self?.removeMKAnnotations(forBars: self?.barAnnotations)
-					self?.barAnnotations = []
-					self?.addMKAnnotations(forBars: self?.barsModel.bars)
+					self.collectionView.reloadData()
+					self.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
+					self.mapView.removeMKAnnotations(forBars: self.barAnnotations)
+					self.barAnnotations = []
+					let newAnnotations = self.mapView.addMKAnnotations(forBars: self.dataSource.objects)
+					self.barAnnotations += newAnnotations
 				}
 			}
 		}
@@ -244,30 +191,25 @@ extension MapViewController: MKMapViewDelegate {
 	}
 	public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		guard let annotation = annotation as? BarMKAnnotation else { return nil }
-		
 		let identifier = "Bar"
-		let annotationView: MKAnnotationView
-		if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+		let annotationView: CustomAnnotationView
+		if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? CustomAnnotationView {
 			annotationView = existingView
 		} else {
-			annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+			annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: identifier)
 		}
 		#warning("Implement a unique identifier image for annotation view")
-		annotationView.image = annotation.image
+		//annotationView.image = UIImage(systemName: "house")
 		annotationView.canShowCallout = true
 		return annotationView
 	}
-	
-	
-	
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		guard let annotation = view.annotation as? BarMKAnnotation else { return }
 		guard let index = barsModel.bars.firstIndex(where: { cdYelpBusiness in
 			cdYelpBusiness.id == annotation.id
 		}) else { return }
 		collectionView.show()
-		
-		collectionView.animateToItem(at: IndexPath(row: index, section: 0))
+		collectionView.animateToItem(at: IndexPath(item: index, section: 0))
 	}
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		if overlay is MKPolygon {

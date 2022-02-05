@@ -97,6 +97,7 @@ class DrawMapViewController: UIViewController {
 		guard let currentIndex = navigationController?.viewControllers.count else { navigationController?.popViewController(animated: true); return }
 		// Getting the view controller below this in the stack
 		if let present = navigationController?.viewControllers[currentIndex-2] as? MapViewController {
+			
 			present.addMKPolygons(polygons: polygons)
 		}
 		navigationController?.popViewController(animated: true)

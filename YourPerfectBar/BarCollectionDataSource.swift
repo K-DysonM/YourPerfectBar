@@ -8,8 +8,10 @@
 import UIKit
 import CDYelpFusionKit
 
-class BarCollectionDataSource: NSObject, UICollectionViewDataSource {
+class BarCollectionDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate {
 	var objects = [CDYelpBusiness]()
+	var centerCell: BarCollectionViewCell?
+
 	
 	func numberOfSections(in collectionView: UICollectionView) -> Int {
 		1
@@ -25,8 +27,41 @@ class BarCollectionDataSource: NSObject, UICollectionViewDataSource {
 		let bar = objects[indexPath.item]
 		cell.barTitleLabel.text = bar.name
 		cell.barImageView.contentMode = .scaleAspectFill
-		#warning("Look into if the preferred way is to have direct access to the imageView like this")
 		cell.barImageView.sd_setImage(with: bar.imageUrl, placeholderImage: UIImage(systemName: "music.house"))
 		return cell
 	}
+	
+	
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		print("SELECTED")
+	}
+	
+	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		
+		guard let collectionView = scrollView as? UICollectionView else { return }
+		let centerPoint = CGPoint(x: collectionView.frame.size.width/2 + scrollView.contentOffset.x, y: collectionView.frame.size.height/2 + scrollView.contentOffset.y)
+		
+		let indexPath = collectionView.indexPathForItem(at: centerPoint)
+		if let indexPath = indexPath, self.centerCell == nil {
+			centerCell = collectionView.cellForItem(at: indexPath) as? BarCollectionViewCell
+			centerCell?.transformToLarge()
+		}
+		
+		guard let centerCell = centerCell else { return }
+		let touchX = centerPoint.x - centerCell.center.x
+		if (touchX < -150 || touchX > 150) && !centerCell.isAnimating {
+			centerCell.transformToOriginal()
+			self.centerCell = nil
+		}
+		
+	}
+	
+	
+}
+extension UIView {
+	
+	var isAnimating: Bool {
+		return (self.layer.animationKeys()?.count ?? 0) > 0
+	}
+	
 }
