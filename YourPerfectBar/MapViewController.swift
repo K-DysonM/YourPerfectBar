@@ -191,15 +191,14 @@ extension MapViewController: MKMapViewDelegate {
 	}
 	public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		guard let annotation = annotation as? BarMKAnnotation else { return nil }
-		let identifier = "Bar"
 		let annotationView: CustomAnnotationView
-		if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? CustomAnnotationView {
+		if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier) as? CustomAnnotationView {
 			annotationView = existingView
 		} else {
-			annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+			annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
 		}
 		#warning("Implement a unique identifier image for annotation view")
-		//annotationView.image = UIImage(systemName: "house")
+		annotationView.glyphImage = annotation.image
 		annotationView.canShowCallout = true
 		return annotationView
 	}

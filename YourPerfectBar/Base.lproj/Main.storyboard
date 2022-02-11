@@ -156,6 +156,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="beerIcon" width="513" height="513"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
