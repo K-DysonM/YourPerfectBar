@@ -8,6 +8,8 @@
 import UIKit
 
 class BarsCollectionView: UICollectionView {
+	var currentIndex: IndexPath?
+	
 	override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
 		super.init(frame: frame, collectionViewLayout: layout)
 		createSubviews()
@@ -42,13 +44,31 @@ class BarsCollectionView: UICollectionView {
 	
 	func animateToItem(at index: IndexPath) {
 		// This is where we will implement the cell growing larger if its being shown
-		#warning("Bug where if animated is true it doesn't scrollToItem")
 		
+		guard let dataSource = dataSource else { return }
+		
+		// Shrink the previous cell
+		if let currentIndex = currentIndex {
+			let cell = cellForItem(at: currentIndex) as? BarCollectionViewCell
+			cell?.transformToOriginal()
+		}
+		currentIndex = index
+		
+		// If cell is already a visible cell then just enlarge it
+		if let cell = cellForItem(at: index) as? BarCollectionViewCell {
+			cell.transformToLarge()
+		}
+		
+		// Not already a visible cell in which case we need to let datasource
+		// know which to enlarge when it does become visible
+		if let source = dataSource as? BarCollectionDataSource {
+			source.indexOfFocus = index
+		}
 		scrollToItem(at: index, at: .centeredHorizontally, animated: false)
 		
+		
 		#warning("cellForItem only works on visible cells so it wont have access to those not currently shown on the screen")
-		guard let cell = cellForItem(at: index) as? BarCollectionViewCell else { return }
-		cell.transformToLarge()
+		
 		
 	}
 

@@ -17,6 +17,7 @@ class BarCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+		layer.cornerRadius = 5.0
     }
 	func transformToLarge() {
 		UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: []) {

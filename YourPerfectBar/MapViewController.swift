@@ -54,8 +54,8 @@ class MapViewController: UIViewController {
 		NSLayoutConstraint.activate(
 			[mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			 mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-			 mapView.rightAnchor.constraint(equalTo: view.rightAnchor),
-			 mapView.leftAnchor.constraint(equalTo: view.leftAnchor),
+			 mapView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+			 mapView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
 			 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5.00),
 			 collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
 			 collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
@@ -127,12 +127,15 @@ class MapViewController: UIViewController {
 				self.dataSource.objects = []
 				// ONLY SHOW ANNOTATIONS IF WITHIN THE FRAME -
 				for business in businesses {
+					
+					
 					let inside = self.mapView.visibleMapRect.contain(latitude: business.coordinates?.latitude, longitude: business.coordinates?.longitude)
 					if inside {
 						self.dataSource.objects.append(business)
 						self.barsModel.bars.append(business)
 					}
 				}
+				print("INSIDE", self.dataSource.objects.count)
 				let middleIndex = businesses.count/2
 				
 				DispatchQueue.main.async {
