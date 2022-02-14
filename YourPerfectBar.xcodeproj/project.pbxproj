@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B233FB0527B76C5C00EAFA97 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233FB0427B76C5C00EAFA97 /* SearchView.swift */; };
+		B233FB0727B81CF800EAFA97 /* SearchBarReceiverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233FB0627B81CF800EAFA97 /* SearchBarReceiverProtocol.swift */; };
 		B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCD127A4538800E37C05 /* AppDelegate.swift */; };
 		B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCD327A4538800E37C05 /* SceneDelegate.swift */; };
 		B286BCD627A4538800E37C05 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCD527A4538800E37C05 /* ViewController.swift */; };
@@ -34,6 +36,8 @@
 /* Begin PBXFileReference section */
 		3D05FDADB564DEF38A86D257 /* Pods-YourPerfectBar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourPerfectBar.release.xcconfig"; path = "Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar.release.xcconfig"; sourceTree = "<group>"; };
 		9D8DC50200897EDBC3610282 /* Pods-YourPerfectBar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourPerfectBar.debug.xcconfig"; path = "Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar.debug.xcconfig"; sourceTree = "<group>"; };
+		B233FB0427B76C5C00EAFA97 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		B233FB0627B81CF800EAFA97 /* SearchBarReceiverProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarReceiverProtocol.swift; sourceTree = "<group>"; };
 		B286BCCE27A4538800E37C05 /* YourPerfectBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourPerfectBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B286BCD127A4538800E37C05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B286BCD327A4538800E37C05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -126,6 +130,7 @@
 				B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */,
 				B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */,
 				B286BE3927AC36B800E37C05 /* BarCollectionDataSource.swift */,
+				B233FB0627B81CF800EAFA97 /* SearchBarReceiverProtocol.swift */,
 			);
 			path = YourPerfectBar;
 			sourceTree = "<group>";
@@ -139,6 +144,7 @@
 				B286BCF027A4754700E37C05 /* BarTableViewCell.swift */,
 				B286BE6727AF1B9B00E37C05 /* BarsMapView.swift */,
 				B286BE6927AF257A00E37C05 /* BarAnnotationView.swift */,
+				B233FB0427B76C5C00EAFA97 /* SearchView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -295,6 +301,7 @@
 				B286BDDF27AAFB6F00E37C05 /* MapKit+Extensions.swift in Sources */,
 				B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */,
 				B286BE3827AC344100E37C05 /* BarsCollectionView.swift in Sources */,
+				B233FB0527B76C5C00EAFA97 /* SearchView.swift in Sources */,
 				B286BCE627A4661D00E37C05 /* Configuration.swift in Sources */,
 				B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */,
 				B286BE6A27AF257A00E37C05 /* BarAnnotationView.swift in Sources */,
@@ -302,6 +309,7 @@
 				B286BE6827AF1B9B00E37C05 /* BarsMapView.swift in Sources */,
 				B286BCF527A49FCE00E37C05 /* MapViewController.swift in Sources */,
 				B286BD0927A5CF2200E37C05 /* BarsModel.swift in Sources */,
+				B233FB0727B81CF800EAFA97 /* SearchBarReceiverProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,7 +13,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="ListViewController" id="ZUE-Cg-cGs" customClass="ViewController" customModule="YourPerfectBar" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="300" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="tkd-Mt-Wik">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
@@ -107,7 +107,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ud4-DO-ogN" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="favorites" id="U1N-SA-9uv"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="yC0-NK-Uv0">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="yC0-NK-Uv0">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -156,7 +156,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="beerIcon" width="513" height="513"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -12,7 +12,7 @@ import CDYelpFusionKit
 class BarsMapView: MKMapView {
 	let INITIAL_COORDINATE: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.7580, longitude: -73.9855)
 	var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
-	 init() {
+	init() {
 		super.init(frame: .zero)
 		createSubviews()
 	}

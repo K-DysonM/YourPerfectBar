@@ -10,10 +10,14 @@ import MapKit
 import CoreLocation
 import CDYelpFusionKit
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, SearchBarReceiverProtocol {
+	
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var barAnnotations = [BarMKAnnotation]()
 	var barsModel: BarsModel!
+	
+	
+	let defaultTintColor = UIColor(named: "HunterGreen")
 	
 	private(set) var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
 	let screenSize: CGRect = UIScreen.main.bounds
@@ -70,16 +74,21 @@ class MapViewController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		assert(defaultTintColor != nil, "defaultTintColor Invalid Setup")
 
         // Navigation bar setup
-		let searchBar = UISearchBar()
-		searchBar.placeholder = "Search A Bar..."
-		navigationItem.titleView = searchBar
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "List", style: .plain, target: self, action: #selector(showListView))
+		navigationItem.leftBarButtonItem?.tintColor = defaultTintColor
 	
 		let locationButton = UIBarButtonItem(image: UIImage(systemName: "location.fill.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
-		let searchDrawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(setDrawOnMap))
-		navigationItem.rightBarButtonItems = [locationButton, searchDrawButton]
+		locationButton.tintColor = defaultTintColor
+		let drawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(setDrawOnMap))
+		drawButton.tintColor = defaultTintColor
+		
+		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(openSearch))
+		searchButton.tintColor = defaultTintColor
+		navigationItem.rightBarButtonItems = [locationButton, drawButton, searchButton]
 		// Location setup
 		locationManager = CLLocationManager()
 		locationManager?.delegate = self
@@ -91,12 +100,27 @@ class MapViewController: UIViewController {
 		
 		// MapView setup
 		mapView.delegate = self
+		
 		mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
 
 		barsModel.bars = []
 		dataSource.objects = []
 		searchForBarsAt(coordinate: mapView.INITIAL_COORDINATE, location: nil)
     }
+	
+	@objc func openSearch() {
+		let searchView = SearchView()
+		searchView.modalPresentationStyle = .overCurrentContext
+		searchView.modalPresentationCapturesStatusBarAppearance = true
+		searchView.searchBarReceiver = self
+		present(searchView, animated: false)
+	}
+	func sendSearchBarText(_ text: String) {
+		print("Received in MapViewController: ", text)
+	}
+	
+	
+	
 	/// Adds an array of MKPolygon objects to the map view
 	func addMKPolygons(polygons: [MKPolygon]) {
 		mapView.addOverlays(polygons)
@@ -105,7 +129,6 @@ class MapViewController: UIViewController {
 	
 	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
 		DispatchQueue.global().async {
-			print("FIRST CALL")
 			self.yelpAPIClient.searchBusinesses(
 				byTerm: "bars",
 				location: location,
