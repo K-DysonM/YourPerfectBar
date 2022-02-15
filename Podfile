@@ -7,6 +7,7 @@ target 'YourPerfectBar' do
   pod 'SDWebImage'
   pod 'SwiftLint'
   pod 'CDYelpFusionKit'
+  pod 'GooglePlaces'
   # Pods for YourPerfectBar
 
 end

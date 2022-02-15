@@ -6,7 +6,10 @@
 //
 
 import UIKit
+import MapKit
 
 protocol SearchBarReceiverProtocol {
 	func sendSearchBarText(_ text: String)
+	func sendSearchBarAutocompleteResults(_ places: [Business])
+	var mapView: BarsMapView! { get }
 }

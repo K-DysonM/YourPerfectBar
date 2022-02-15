@@ -12,6 +12,7 @@ import CDYelpFusionKit
 
 class MapViewController: UIViewController, SearchBarReceiverProtocol {
 	
+	
 	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
 	var barAnnotations = [BarMKAnnotation]()
 	var barsModel: BarsModel!
@@ -106,9 +107,11 @@ class MapViewController: UIViewController, SearchBarReceiverProtocol {
 		barsModel.bars = []
 		dataSource.objects = []
 		searchForBarsAt(coordinate: mapView.INITIAL_COORDINATE, location: nil)
+		sendSearchBarText("ccasds")
     }
 	
 	@objc func openSearch() {
+		sendSearchBarText("ccasds")
 		let searchView = SearchView()
 		searchView.modalPresentationStyle = .overCurrentContext
 		searchView.modalPresentationCapturesStatusBarAppearance = true
@@ -117,6 +120,41 @@ class MapViewController: UIViewController, SearchBarReceiverProtocol {
 	}
 	func sendSearchBarText(_ text: String) {
 		print("Received in MapViewController: ", text)
+	}
+	func sendSearchBarAutocompleteResults(_ places: [Business]) {
+		self.barsModel.bars = []
+		self.dataSource.objects = []
+		self.mapView.removeMKAnnotations(forBars: self.barAnnotations)
+		self.barAnnotations = []
+		for place in places{
+			yelpAPIClient.searchBusinesses(name: place.name,
+										   addressOne: place.location,
+										   addressTwo: nil,
+										   addressThree: nil,
+										   city: "New York City",
+										   state: "NY",
+										   country: "US",
+										   latitude: nil,
+										   longitude: nil,
+										   phone: nil,
+										   zipCode: nil,
+										   yelpBusinessId: nil,
+										   limit: 1,
+										   matchThresholdType: .normal) { (response) in
+				
+				if let response = response, let business = response.businesses?.first {
+						self.barsModel.bars.append(business)
+						self.dataSource.objects.append(business)
+					
+						DispatchQueue.main.async {
+							self.collectionView.reloadData()
+							let newAnnotations = self.mapView.addMKAnnotations(forBars: self.dataSource.objects)
+							self.barAnnotations += newAnnotations
+						}
+				}
+
+			}
+		}
 	}
 	
 	

@@ -6,11 +6,16 @@
 //
 
 import UIKit
+import GooglePlaces
+import MapKit
 
 class SearchView: UIViewController, UISearchBarDelegate {
 	var searchBar: UISearchBar!
 	var backgroundView: UIView!
 	var searchBarReceiver: SearchBarReceiverProtocol?
+	
+	private var placesClient: GMSPlacesClient!
+
 	
 	override func loadView() {
 		view = UIView()
@@ -19,6 +24,7 @@ class SearchView: UIViewController, UISearchBarDelegate {
 	}
 	override func viewDidLoad() {
 		searchBar.delegate = self
+		placesClient = GMSPlacesClient.shared()
 		assert(searchBarReceiver != nil, "Invalid Setup SearchView missing SearchBarReceiverProtocol")
 		
 	}
@@ -68,7 +74,44 @@ class SearchView: UIViewController, UISearchBarDelegate {
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 		if let searchBarReceiver = searchBarReceiver, let text = searchBar.searchTextField.text {
 			searchBarReceiver.sendSearchBarText(text)
+			
+			let token = GMSAutocompleteSessionToken.init()
+			// Create a type filter.
+			let filter = GMSAutocompleteFilter()
+			filter.type = .establishment
+			let visibleRegion = searchBarReceiver.mapView
+			filter.locationBias = GMSPlaceRectangularLocationOption((visibleRegion?.topLeftCoordinate())!, (visibleRegion?.bottomRightCoordinate())!)
+			
+			
+			placesClient?.findAutocompletePredictions(
+				fromQuery: text,
+				filter: filter,
+				sessionToken: token,
+				callback: { (results, error) in
+					if let error = error {
+						print("Autocomplete error: \(error)")
+						return
+					}
+					if let results = results {
+						let businesses = results.compactMap { result -> Business in
+							let name = result.attributedPrimaryText.string
+							let location = result.attributedSecondaryText?.string ?? ""
+							return Business(name: name, location: location)
+						}
+						searchBarReceiver.sendSearchBarAutocompleteResults(businesses)
+					}
+				  })
 		}
 	}
 	
+}
+
+extension MKMapView {
+	func topLeftCoordinate() -> CLLocationCoordinate2D {
+		return convert(.zero, toCoordinateFrom: self)
+	}
+	
+	func bottomRightCoordinate() -> CLLocationCoordinate2D {
+		return convert(CGPoint(x: frame.width, y: frame.height), toCoordinateFrom: self)
+	}
 }

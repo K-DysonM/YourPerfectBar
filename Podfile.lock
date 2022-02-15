@@ -2,6 +2,7 @@ PODS:
   - Alamofire (5.4.3)
   - CDYelpFusionKit (3.0.1):
     - Alamofire (= 5.4.3)
+  - GooglePlaces (5.0.0)
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
@@ -9,6 +10,7 @@ PODS:
 
 DEPENDENCIES:
   - CDYelpFusionKit
+  - GooglePlaces
   - SDWebImage
   - SwiftLint
 
@@ -16,15 +18,17 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - CDYelpFusionKit
+    - GooglePlaces
     - SDWebImage
     - SwiftLint
 
 SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   CDYelpFusionKit: 69b961926699f038a12fb2476c48e6b45db8c0a9
+  GooglePlaces: 5d87ca13ed98b7a937e0d8bc7026f718c7263271
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SwiftLint: 6bc52a21f0fd44cab9aa2dc8e534fb9f5e3ec507
 
-PODFILE CHECKSUM: bd0f6da20f335be69f5098f92de7d2f2d83ef1f2
+PODFILE CHECKSUM: 877afb24b91f2f47e18b331dd7b802747eb68c06
 
 COCOAPODS: 1.11.2
