@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (5.4.3)
+  - Cartography (4.0.0)
   - CDYelpFusionKit (3.0.1):
     - Alamofire (= 5.4.3)
   - GooglePlaces (5.0.0)
@@ -9,6 +10,7 @@ PODS:
   - SwiftLint (0.46.2)
 
 DEPENDENCIES:
+  - Cartography
   - CDYelpFusionKit
   - GooglePlaces
   - SDWebImage
@@ -17,6 +19,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Cartography
     - CDYelpFusionKit
     - GooglePlaces
     - SDWebImage
@@ -24,11 +27,12 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
+  Cartography: c5626d29056b20f1e95c017326ee4df57cc39ad8
   CDYelpFusionKit: 69b961926699f038a12fb2476c48e6b45db8c0a9
   GooglePlaces: 5d87ca13ed98b7a937e0d8bc7026f718c7263271
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SwiftLint: 6bc52a21f0fd44cab9aa2dc8e534fb9f5e3ec507
 
-PODFILE CHECKSUM: 877afb24b91f2f47e18b331dd7b802747eb68c06
+PODFILE CHECKSUM: a90e0faa82ada481e8ab8a515a260eb9bfc095c0
 
 COCOAPODS: 1.11.2

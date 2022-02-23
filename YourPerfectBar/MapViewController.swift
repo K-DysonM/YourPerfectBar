@@ -8,250 +8,217 @@
 import UIKit
 import MapKit
 import CoreLocation
-import CDYelpFusionKit
+import Combine
+import Cartography
 
-class MapViewController: UIViewController, SearchBarReceiverProtocol {
+
+class MapViewController: UIViewController, SearchBarReceiverProtocol, DrawingMapDelegate {
 	
 	
-	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
+	
+	var barsViewModel: BarsViewModel!
+	private var cancellables: Set<AnyCancellable> = []
+	
 	var barAnnotations = [BarMKAnnotation]()
 	var barsModel: BarsModel!
 	
-	
-	let defaultTintColor = UIColor(named: "HunterGreen")
-	
-	private(set) var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
-	let screenSize: CGRect = UIScreen.main.bounds
-	var locationManager: CLLocationManager?
 	var mapView: BarsMapView!
-	var button: UIButton!
-	var collectionView: BarsCollectionView!
-	var isShown = true
-	
 	var dataSource = BarCollectionDataSource()
 	
-	override func loadView() {
-		view = UIView()
-		view.backgroundColor = .white
-		// MapView setup
-		mapView = BarsMapView()
-		mapView.translatesAutoresizingMaskIntoConstraints = false
-		
-		// CollectionView setup
+	var drawMode = false
+	var polygons: [MKPolygon] = []
+	
+	lazy var collectionView: BarsCollectionView = {
 		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 		layout.itemSize = CGSize(width: 300, height: 200)
 		layout.minimumInteritemSpacing = 5
 		layout.minimumLineSpacing = 5
 		layout.scrollDirection = .horizontal
-		collectionView = BarsCollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-		collectionView.translatesAutoresizingMaskIntoConstraints = false
+		let collectionView = BarsCollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+		collectionView.dataSource = dataSource
+		collectionView.delegate = dataSource
+		return collectionView
+	}()
+	
+	lazy var clearDrawView: DrawClearUIView = {
+		let uiview = DrawClearUIView()
+		uiview.clearDrawButton.addTarget(self, action: #selector(promptRemoveDrawUI), for: .touchDown)
+		return uiview
+	}()
+	
+	lazy var searchResultView: SearchResultsUIView = {
+		return SearchResultsUIView()
+	}()
+	
+	override func loadView() {
+		view = UIView()
+		view.backgroundColor = .white
+		mapView = BarsMapView()
 		
-		// Button setup
-		button = UIButton(type: .system)
-		button.setImage(UIImage(systemName: "x.square"), for: .normal)
-		button.backgroundColor = .white
-		button.addTarget(mapView, action: #selector(mapView.removeMKPolygons), for: .touchDown)
-		button.translatesAutoresizingMaskIntoConstraints = false
-		
-		view.addSubview(mapView)
-		view.addSubview(collectionView)
-		view.addSubview(button)
-		NSLayoutConstraint.activate(
-			[mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-			 mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-			 mapView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
-			 mapView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-			 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5.00),
-			 collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
-			 collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
-			 collectionView.heightAnchor.constraint(equalToConstant: 250.00),
-			 button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-			 button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
-			 button.heightAnchor.constraint(equalToConstant: 50.00),
-			 button.widthAnchor.constraint(equalToConstant: 50.00)
-			]
-		)
+		[mapView, collectionView, searchResultView].forEach {
+			view.addSubview($0)
+		}
+		constrain(mapView, collectionView, searchResultView) { mapView, collectionView, searchResultView in
+			let superview = mapView.superview!.safeAreaLayoutGuide
+			
+			align(top: superview, mapView)
+			align(right: superview, mapView, collectionView)
+			align(left: superview, mapView, collectionView)
+			align(bottom: superview, mapView, collectionView)
+			searchResultView.centerX == superview.centerX
+			searchResultView.height == 30
+			searchResultView.width == 100
+			searchResultView.bottom == superview.bottom - 10
+			collectionView.height == 250
+		}
 	}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		
-		assert(defaultTintColor != nil, "defaultTintColor Invalid Setup")
 
         // Navigation bar setup
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "List", style: .plain, target: self, action: #selector(showListView))
-		navigationItem.leftBarButtonItem?.tintColor = defaultTintColor
-	
-		let locationButton = UIBarButtonItem(image: UIImage(systemName: "location.fill.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
-		locationButton.tintColor = defaultTintColor
-		let drawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(setDrawOnMap))
-		drawButton.tintColor = defaultTintColor
-		
-		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(openSearch))
-		searchButton.tintColor = defaultTintColor
+		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "List", style: .plain, target: self, action: #selector(openListViewUI))
+		let locationButton = UIBarButtonItem(image: UIImage(systemName: "location.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
+		let drawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(openDrawUI))
+		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(openSearchUI))
 		navigationItem.rightBarButtonItems = [locationButton, drawButton, searchButton]
-		// Location setup
-		locationManager = CLLocationManager()
-		locationManager?.delegate = self
-		locationManager?.requestAlwaysAuthorization()
-		
-		// Collection View setup
-		collectionView.dataSource = dataSource
-		collectionView.delegate = dataSource
+		navigationController?.navigationBar.tintColor = DEFAULT_TINT
 		
 		// MapView setup
 		mapView.delegate = self
-		
+		mapView.showsCompass = false
 		mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
-
+		
+		// ViewModel setup
 		barsModel.bars = []
 		dataSource.objects = []
-		searchForBarsAt(coordinate: mapView.INITIAL_COORDINATE, location: nil)
-		sendSearchBarText("ccasds")
+		barsViewModel = BarsViewModel()
+		barsViewModel.setFilter { business in
+			self.mapView.visibleMapRect.contain(latitude: business.coordinates?.latitude, longitude: business.coordinates?.longitude)
+		}
+		
+		barsViewModel.$currentBars.sink { [weak self] bars in
+			self?.barsModel.bars = bars
+			self?.dataSource.objects = bars
+			self?.updateMapUI()
+			self?.updateCollectionViewUI()
+			self?.updateSearchResultsViewUI()
+			self?.searchResultView.setResultCount(bars.count)
+		}.store(in: &cancellables)
+		
+		barsViewModel.fetchBarsAtCoordinate(mapView.INITIAL_COORDINATE)
     }
+	func updateSearchResultsViewUI() {
+		DispatchQueue.main.async {
+			
+		}
+	}
 	
-	@objc func openSearch() {
-		sendSearchBarText("ccasds")
+	func updateMapUI() {
+		// Remove the current MKAnnotations
+		DispatchQueue.main.async {
+			self.mapView.removeMKAnnotations(forBars: self.barAnnotations)
+			self.barAnnotations.removeAll(keepingCapacity: true)
+			self.barAnnotations = self.mapView.addMKAnnotations(forBars: self.barsModel.bars)
+		}
+	}
+	
+	func updateCollectionViewUI() {
+		DispatchQueue.main.async {
+			self.collectionView.reloadData()
+			self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .centeredHorizontally, animated: false)
+		}
+	}
+	
+	@objc func openSearchUI() {
 		let searchView = SearchView()
 		searchView.modalPresentationStyle = .overCurrentContext
 		searchView.modalPresentationCapturesStatusBarAppearance = true
+		searchView.barsViewModel = barsViewModel
 		searchView.searchBarReceiver = self
 		present(searchView, animated: false)
+	}
+	@objc func promptRemoveDrawUI() {
+		let ac = UIAlertController(title: "Are you sure you want to discard your drawings?", message: nil, preferredStyle: .actionSheet)
+		ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+		ac.addAction(UIAlertAction(title: "Discard Drawings", style: .destructive, handler: { [weak self] _ in
+			self?.drawMode = false
+			self?.mapView.removeMKPolygons()
+			self?.clearDrawView.removeFromSuperview()
+			self?.barsViewModel.setFilter { business in
+				self!.mapView.visibleMapRect.contain(latitude: business.coordinates?.latitude, longitude: business.coordinates?.longitude)
+			}
+			self?.polygons.removeAll()
+		}))
+		present(ac, animated: true)
+	}
+	
+	// NAVIGATE USER TO DRAW MODE
+	@objc func openDrawUI() {
+		let vc = DrawMapViewController()
+		vc.region = mapView.region
+		vc.drawingMapDelegate = self
+		let nav = UINavigationController(rootViewController: vc)
+		nav.modalTransitionStyle = .flipHorizontal
+		nav.modalPresentationStyle = .fullScreen
+		present(nav, animated: true)
+	}
+	@objc func openListViewUI() {
+		tabBarController?.selectedIndex = 1
 	}
 	func sendSearchBarText(_ text: String) {
 		print("Received in MapViewController: ", text)
 	}
-	func sendSearchBarAutocompleteResults(_ places: [Business]) {
-		self.barsModel.bars = []
-		self.dataSource.objects = []
-		self.mapView.removeMKAnnotations(forBars: self.barAnnotations)
-		self.barAnnotations = []
-		for place in places{
-			yelpAPIClient.searchBusinesses(name: place.name,
-										   addressOne: place.location,
-										   addressTwo: nil,
-										   addressThree: nil,
-										   city: "New York City",
-										   state: "NY",
-										   country: "US",
-										   latitude: nil,
-										   longitude: nil,
-										   phone: nil,
-										   zipCode: nil,
-										   yelpBusinessId: nil,
-										   limit: 1,
-										   matchThresholdType: .normal) { (response) in
-				
-				if let response = response, let business = response.businesses?.first {
-						self.barsModel.bars.append(business)
-						self.dataSource.objects.append(business)
-					
-						DispatchQueue.main.async {
-							self.collectionView.reloadData()
-							let newAnnotations = self.mapView.addMKAnnotations(forBars: self.dataSource.objects)
-							self.barAnnotations += newAnnotations
-						}
-				}
 
-			}
-		}
-	}
-	
-	
-	
 	/// Adds an array of MKPolygon objects to the map view
 	func addMKPolygons(polygons: [MKPolygon]) {
-		mapView.addOverlays(polygons)
-		mapView.removeMKAnnotations(forBars: barAnnotations, outside: polygons)
-	}
-	
-	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
-		DispatchQueue.global().async {
-			self.yelpAPIClient.searchBusinesses(
-				byTerm: "bars",
-				location: location,
-				latitude: coordinate?.latitude,
-				longitude: coordinate?.longitude,
-				radius: 5000,
-				categories: nil,
-				locale: .english_unitedStates,
-				limit: 15,
-				offset: nil,
-				sortBy: .bestMatch,
-				priceTiers: nil,
-				openNow: nil,
-				openAt: nil,
-				attributes: nil) {[weak self] cdYelpSearchResponse in
-				guard let businesses = cdYelpSearchResponse?.businesses else { return }
-				guard let self = self else { return }
-				self.barsModel.bars = []
-				self.dataSource.objects = []
-				// ONLY SHOW ANNOTATIONS IF WITHIN THE FRAME -
-				for business in businesses {
-					
-					
-					let inside = self.mapView.visibleMapRect.contain(latitude: business.coordinates?.latitude, longitude: business.coordinates?.longitude)
-					if inside {
-						self.dataSource.objects.append(business)
-						self.barsModel.bars.append(business)
-					}
-				}
-				print("INSIDE", self.dataSource.objects.count)
-				let middleIndex = businesses.count/2
-				
-				DispatchQueue.main.async {
-					self.collectionView.reloadData()
-					self.collectionView.scrollToItem(at: IndexPath(row: middleIndex, section: 0), at: .centeredHorizontally, animated: false)
-					self.mapView.removeMKAnnotations(forBars: self.barAnnotations)
-					self.barAnnotations = []
-					let newAnnotations = self.mapView.addMKAnnotations(forBars: self.dataSource.objects)
-					self.barAnnotations += newAnnotations
+		// Instantiate clear button
+		view.addSubview(clearDrawView)
+		constrain(clearDrawView) { view in
+			let superview = view.superview!.safeAreaLayoutGuide
+			view.top == superview.top + 5
+			view.right == superview.right - 5
+			view.left == superview.left + 5
+			view.height == 50
+		}
+		self.polygons = polygons
+		
+		
+		barsViewModel.setFilter { business in
+			polygons.contains { polygon in
+				if let lat = business.coordinates?.latitude, let long = business.coordinates?.longitude {
+					return polygon.contain(coor: CLLocationCoordinate2D(latitude: lat, longitude: long))
+				} else {
+					return false
 				}
 			}
 		}
+		drawMode = true
+		mapView.addOverlays(polygons)
+		barsViewModel.removeAllCurrentBars()
+		barsViewModel.fetchBarsAtPolygons(polygons)
 	}
-	
-	@objc
-	func showListView() {
-		tabBarController?.selectedIndex = 0
-	}
-	@objc
-	func setMapToCurrentLocation() {
-		if locationManager?.authorizationStatus == .authorizedAlways {
-			if let coordinate = locationManager?.location?.coordinate {
-				let coordinateRegion = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
-				mapView.setRegion(coordinateRegion, animated: true)
-			}
+	@objc func setMapToCurrentLocation() {
+		if let coordinate = barsViewModel.fetchUserLocationCoordinate() {
+			let coordinateRegion = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: LOCATION_ZOOM_LEVEL, longitudeDelta: LOCATION_ZOOM_LEVEL))
+			mapView.setRegion(coordinateRegion, animated: true)
 		} else {
 			let ac = UIAlertController(title: "Access Restricted", message: "App doesn't have permission to use your location", preferredStyle: .alert)
 			ac.addAction(UIAlertAction(title: "OK", style: .default))
 			present(ac, animated: true)
 		}
 	}
-	// NAVIGATE USER TO DRAW MODE
-	@objc
-	func setDrawOnMap() {
-		let vc = DrawMapViewController()
-		vc.region = mapView.region
-		navigationController?.pushViewController(vc, animated: true)
-	}
 }
-
-
-extension MapViewController: CLLocationManagerDelegate {
-	func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-		if manager.authorizationStatus == .authorizedAlways {
-			//
-		}
-	}
-}
-
 // MAPVIEW METHODS
 extension MapViewController: MKMapViewDelegate {
 	#warning("Should actually search for bars but keep in mind the overlays. So don't search for bars in those overlays. This could be a parameter that can be nil in the case you don't need to search within an overlay ")
 	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 		collectionView.hide()
-		searchForBarsAt(coordinate: mapView.centerCoordinate, location: nil)
+		searchResultView.isHidden = false
+		if !drawMode{
+			barsViewModel.fetchBarsAtCoordinate(mapView.centerCoordinate)
+			barsViewModel.removeAllCurrentBars()
+		}
 	}
 	public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		guard let annotation = annotation as? BarMKAnnotation else { return nil }
@@ -261,7 +228,7 @@ extension MapViewController: MKMapViewDelegate {
 		} else {
 			annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
 		}
-		#warning("Implement a unique identifier image for annotation view")
+		#warning("Implement a unique identifier image for annotation view - maybe glass fills up based on stars?")
 		annotationView.glyphImage = annotation.image
 		annotationView.canShowCallout = true
 		return annotationView
@@ -272,12 +239,14 @@ extension MapViewController: MKMapViewDelegate {
 			cdYelpBusiness.id == annotation.id
 		}) else { return }
 		collectionView.show()
+		searchResultView.isHidden = true
 		collectionView.animateToItem(at: IndexPath(item: index, section: 0))
 	}
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		if overlay is MKPolygon {
+			print("in here")
 			let polygonView = MKPolygonRenderer(overlay: overlay)
-			polygonView.strokeColor = UIColor(named: "HunterGreen")
+			polygonView.strokeColor = DEFAULT_TINT?.resolvedColor(with: self.traitCollection)
 			polygonView.lineWidth = 5
 			polygonView.fillColor = .lightGray.withAlphaComponent(0.3)
 			

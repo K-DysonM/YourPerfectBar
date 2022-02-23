@@ -7,11 +7,14 @@
 
 import UIKit
 import MapKit
+import Cartography
 
 class DrawMapViewController: UIViewController {
+	var drawingMapDelegate: DrawingMapDelegate?
 	
 	// Map
 	var mapView: MKMapView!
+	var button: UIButton!
 	var region: MKCoordinateRegion?
 	
 	// Drawing
@@ -25,35 +28,90 @@ class DrawMapViewController: UIViewController {
 	var lastPoint = CGPoint.zero
 	var firstPoint = CGPoint.zero
 	var drawingLayers: [CAShapeLayer] = []
-	var polygons: [MKPolygon] = []
+	var polygons: [MKPolygon] = [] {
+		didSet {
+			if points.isEmpty {
+				button.setTitle("DRAW MODE", for: .normal)
+				button.setTitleColor(.label, for: .normal)
+				button.isUserInteractionEnabled = false
+				toolbarItems?[2].tintColor = .white.withAlphaComponent(0.5)
+				toolbarItems?[2].target = nil
+			} else {
+				button.setTitle("RESET", for: .normal)
+				button.setTitleColor(.yellow, for: .normal)
+				button.isUserInteractionEnabled = true
+				toolbarItems?[2].tintColor = .white
+				toolbarItems?[2].target = self
+			}
+		}
+	}
+	var group1: ConstraintGroup?
+	
+	override func loadView() {
+		view = UIView()
+		view.backgroundColor = .black
+		mapView = MKMapView()
+		mapView.isUserInteractionEnabled = false
+		view.addSubview(mapView)
+		
+		button = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 60))
+		button.backgroundColor = .black
+		button.setTitle("DRAW MODE", for: .normal)
+		button.addTarget(self, action: #selector(clearDrawings), for: .touchDown)
+		view.addSubview(button)
+		
+		group1 = constrain(mapView, button) { mapView, button in
+			let superview = mapView.superview!.safeAreaLayoutGuide
+			button.top == superview.top
+			button.left == superview.left
+			button.right == superview.right
+			button.height == 44
+			
+			mapView.top == button.bottom
+			mapView.left == superview.left
+			mapView.right == superview.right
+			mapView.bottom == superview.bottom
+		}
+	}
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = .white
-		navigationItem.title = "DRAW MODE"
-		let xButton = UIBarButtonItem(image: UIImage(systemName: "x.square")?.withTintColor(.red), style: .plain, target: self, action: #selector(clearDrawings))
-		let checkButton = UIBarButtonItem(image: UIImage(systemName: "checkmark.square")?.withTintColor(.green), style: .plain, target: self, action: #selector(applySearch))
-		navigationItem.setRightBarButtonItems([checkButton, xButton], animated: false)
-		mapView = MKMapView()
-		mapView.translatesAutoresizingMaskIntoConstraints = false
-		mapView.isUserInteractionEnabled = false
-		view.addSubview(mapView)
-		NSLayoutConstraint.activate(
-			[
-				mapView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-				mapView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
-				mapView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-				mapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-			]
-		)
+
 		guard let region = region else { dismiss(animated: false); return }
 		mapView.setRegion(region, animated: true)
-		let ac = UIAlertController(title: "Entering Draw Mode", message: "Draw a shape around an area to search", preferredStyle: .alert)
-		ac.addAction(UIAlertAction(title: "Start", style: .default))
-		present(ac, animated: true)
 		
-		// Do any additional setup after loading the view.
+		modalPresentationCapturesStatusBarAppearance = true
+		
+		// TOOL BAR
+		let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(dismissUI))
+		cancelButton.tintColor = .white
+		let add = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(applySearch))
+		add.tintColor = .white.withAlphaComponent(0.5)
+		let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+		toolbarItems = [cancelButton, spacer, add]
+		
+		
+		navigationController?.toolbar.isTranslucent = false
+		navigationController?.toolbar.barTintColor = .black
+		
+		navigationController?.setNavigationBarHidden(true, animated: true)
+		navigationController?.setToolbarHidden(false, animated: false)
+		
+		
+	}
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		return .lightContent
+	}
+	
+	
+	override var prefersStatusBarHidden: Bool {
+		return false
+	}
+
+	
+	@objc func dismissUI() {
+		self.dismiss(animated: true)
 	}
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -85,7 +143,7 @@ class DrawMapViewController: UIViewController {
 	func drawLine(from fromPoint: CGPoint, to toPoint: CGPoint) {
 		currentPath.move(to: fromPoint)
 		currentPath.addLine(to: toPoint)
-		currentLayer.strokeColor = UIColor(named: "HunterGreen")?.withAlphaComponent(0.7).cgColor
+		currentLayer.strokeColor = DEFAULT_TINT?.withAlphaComponent(0.7).cgColor
 		currentLayer.fillColor = nil
 		currentLayer.lineWidth = 5.0
 		currentLayer.lineCap = .round
@@ -94,19 +152,17 @@ class DrawMapViewController: UIViewController {
 	}
 	
 	@objc func applySearch() {
-		guard let currentIndex = navigationController?.viewControllers.count else { navigationController?.popViewController(animated: true); return }
-		// Getting the view controller below this in the stack
-		if let present = navigationController?.viewControllers[currentIndex-2] as? MapViewController {
-			
-			present.addMKPolygons(polygons: polygons)
-		}
-		navigationController?.popViewController(animated: true)
+		guard !polygons.isEmpty else { return }
+		guard let delegate = drawingMapDelegate else { return }
+		delegate.addMKPolygons(polygons: polygons)
+		self.dismiss(animated: true)
 	}
 	
 	@objc func clearDrawings() {
 		for layer in drawingLayers {
 			layer.removeFromSuperlayer()
 		}
+		points.removeAll(keepingCapacity: true)
 		drawingLayers.removeAll(keepingCapacity: true)
 		polygons.removeAll(keepingCapacity: true)
 	}

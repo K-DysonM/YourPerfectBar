@@ -26,6 +26,7 @@ class CustomTabBarController: UITabBarController {
 		let nc = UINavigationController(rootViewController: vc)
 		let nc1 = UINavigationController(rootViewController: vc1)
 		viewControllers = [nc1, nc]
+		tabBar.isHidden = true
         // Do any additional setup after loading the view.
     }
     

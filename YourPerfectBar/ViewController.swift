@@ -11,17 +11,25 @@ import SDWebImage
 import MapKit
 
 class ViewController: UITableViewController {
-	let yelpAPIClient = CDYelpAPIClient(apiKey: Configuration().yelpApiKey)
+	let yelpAPIClient = CDYelpAPIClient(apiKey: YELP_API_KEY)
 	var bars = [CDYelpBusiness]()
 	var barsModel: BarsModel!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view.
+		navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(showMapView))
+		navigationController?.navigationBar.tintColor = DEFAULT_TINT
+		
 		tableView.refreshControl = UIRefreshControl()
 		tableView.refreshControl?.addTarget(self, action: #selector(updateTableView), for: .valueChanged)
 		searchForBarsAt(coordinate: nil, location: "New York City")
 	}
+	@objc
+	func showMapView() {
+		tabBarController?.selectedIndex = 0
+	}
+	
 	func searchForBarsAt(coordinate: CLLocationCoordinate2D?, location: String?) {
 		DispatchQueue.global().async {
 			self.yelpAPIClient.searchBusinesses(

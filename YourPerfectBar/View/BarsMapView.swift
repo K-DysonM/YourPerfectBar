@@ -33,9 +33,7 @@ class BarsMapView: MKMapView {
 	/// Adds an array of bars as BarMKAnnotations to the map view
 	func addMKAnnotations(forBars list: [CDYelpBusiness]?) -> [BarMKAnnotation] {
 		guard let list = list else { return [] }
-		print("This is forBars: \(list)")
 		let newAnnotations = list.compactMap { convertToBarMKAnnotation(from: $0) }
-		print("This is newAnnotations: \(newAnnotations)")
 		addAnnotations(newAnnotations)
 		return newAnnotations
 	}

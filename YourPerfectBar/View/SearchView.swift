@@ -13,6 +13,7 @@ class SearchView: UIViewController, UISearchBarDelegate {
 	var searchBar: UISearchBar!
 	var backgroundView: UIView!
 	var searchBarReceiver: SearchBarReceiverProtocol?
+	var barsViewModel: BarsViewModel!
 	
 	private var placesClient: GMSPlacesClient!
 
@@ -46,8 +47,8 @@ class SearchView: UIViewController, UISearchBarDelegate {
 		searchBar.placeholder = "Search"
 		searchBar.showsCancelButton = true
 		searchBar.backgroundImage = UIImage()
-		searchBar.backgroundColor = UIColor(red: 0.969, green: 0.969, blue: 0.969, alpha: 1.0)
-		searchBar.layer.borderColor = UIColor.white.cgColor
+		searchBar.backgroundColor = .systemBackground
+		searchBar.layer.borderColor = UIColor.clear.cgColor
 		searchBar.tintColor = UIColor(named: "HunterGreen")
 		searchBar.enablesReturnKeyAutomatically = true
 		searchBar.returnKeyType = .search
@@ -74,33 +75,9 @@ class SearchView: UIViewController, UISearchBarDelegate {
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 		if let searchBarReceiver = searchBarReceiver, let text = searchBar.searchTextField.text {
 			searchBarReceiver.sendSearchBarText(text)
-			
-			let token = GMSAutocompleteSessionToken.init()
-			// Create a type filter.
-			let filter = GMSAutocompleteFilter()
-			filter.type = .establishment
 			let visibleRegion = searchBarReceiver.mapView
-			filter.locationBias = GMSPlaceRectangularLocationOption((visibleRegion?.topLeftCoordinate())!, (visibleRegion?.bottomRightCoordinate())!)
+			barsViewModel.fetchAutocompletePredictions(text: text, inTopLeftCoordinate: visibleRegion!.topLeftCoordinate(), inBottomRightCoordinate: visibleRegion!.bottomRightCoordinate())
 			
-			
-			placesClient?.findAutocompletePredictions(
-				fromQuery: text,
-				filter: filter,
-				sessionToken: token,
-				callback: { (results, error) in
-					if let error = error {
-						print("Autocomplete error: \(error)")
-						return
-					}
-					if let results = results {
-						let businesses = results.compactMap { result -> Business in
-							let name = result.attributedPrimaryText.string
-							let location = result.attributedSecondaryText?.string ?? ""
-							return Business(name: name, location: location)
-						}
-						searchBarReceiver.sendSearchBarAutocompleteResults(businesses)
-					}
-				  })
 		}
 	}
 	
