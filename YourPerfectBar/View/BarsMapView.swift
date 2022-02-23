@@ -12,7 +12,7 @@ import CDYelpFusionKit
 class BarsMapView: MKMapView {
 	let INITIAL_COORDINATE: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.7580, longitude: -73.9855)
 	var LOCATION_ZOOM_LEVEL: CLLocationDegrees = 0.05
-	 init() {
+	init() {
 		super.init(frame: .zero)
 		createSubviews()
 	}
@@ -33,9 +33,7 @@ class BarsMapView: MKMapView {
 	/// Adds an array of bars as BarMKAnnotations to the map view
 	func addMKAnnotations(forBars list: [CDYelpBusiness]?) -> [BarMKAnnotation] {
 		guard let list = list else { return [] }
-		print("This is forBars: \(list)")
 		let newAnnotations = list.compactMap { convertToBarMKAnnotation(from: $0) }
-		print("This is newAnnotations: \(newAnnotations)")
 		addAnnotations(newAnnotations)
 		return newAnnotations
 	}

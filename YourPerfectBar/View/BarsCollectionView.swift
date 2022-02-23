@@ -66,10 +66,6 @@ class BarsCollectionView: UICollectionView {
 		}
 		scrollToItem(at: index, at: .centeredHorizontally, animated: false)
 		
-		
-		#warning("cellForItem only works on visible cells so it wont have access to those not currently shown on the screen")
-		
-		
 	}
 
 }
