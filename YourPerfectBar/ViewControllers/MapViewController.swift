@@ -13,14 +13,11 @@ import Cartography
 
 
 class MapViewController: UIViewController, SearchBarReceiverProtocol, DrawingMapDelegate {
-	
-	
-	
 	var barsViewModel: BarsViewModel!
 	private var cancellables: Set<AnyCancellable> = []
 	
 	var barAnnotations = [BarMKAnnotation]()
-	var barsModel: BarsModel!
+	var bars: [Any] = []
 	
 	var mapView: BarsMapView!
 	var dataSource = BarCollectionDataSource()
@@ -77,11 +74,11 @@ class MapViewController: UIViewController, SearchBarReceiverProtocol, DrawingMap
         super.viewDidLoad()
 
         // Navigation bar setup
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "List", style: .plain, target: self, action: #selector(openListViewUI))
 		let locationButton = UIBarButtonItem(image: UIImage(systemName: "location.viewfinder"), style: .plain, target: self, action: #selector(setMapToCurrentLocation))
 		let drawButton = UIBarButtonItem(image: UIImage(systemName: "hand.draw"), style: .plain, target: self, action: #selector(openDrawUI))
 		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(openSearchUI))
-		navigationItem.rightBarButtonItems = [locationButton, drawButton, searchButton]
+		navigationItem.leftBarButtonItems = [searchButton, drawButton]
+		navigationItem.rightBarButtonItems = [locationButton]
 		navigationController?.navigationBar.tintColor = DEFAULT_TINT
 		
 		// MapView setup
@@ -90,15 +87,12 @@ class MapViewController: UIViewController, SearchBarReceiverProtocol, DrawingMap
 		mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
 		
 		// ViewModel setup
-		barsModel.bars = []
 		dataSource.objects = []
-		barsViewModel = BarsViewModel()
 		barsViewModel.setFilter { business in
 			self.mapView.visibleMapRect.contain(latitude: business.coordinates?.latitude, longitude: business.coordinates?.longitude)
 		}
 		
 		barsViewModel.$currentBars.sink { [weak self] bars in
-			self?.barsModel.bars = bars
 			self?.dataSource.objects = bars
 			self?.updateMapUI()
 			self?.updateCollectionViewUI()
@@ -119,7 +113,7 @@ class MapViewController: UIViewController, SearchBarReceiverProtocol, DrawingMap
 		DispatchQueue.main.async {
 			self.mapView.removeMKAnnotations(forBars: self.barAnnotations)
 			self.barAnnotations.removeAll(keepingCapacity: true)
-			self.barAnnotations = self.mapView.addMKAnnotations(forBars: self.barsModel.bars)
+			self.barAnnotations = self.mapView.addMKAnnotations(forBars: self.barsViewModel.currentBars)
 		}
 	}
 	
@@ -235,7 +229,7 @@ extension MapViewController: MKMapViewDelegate {
 	}
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		guard let annotation = view.annotation as? BarMKAnnotation else { return }
-		guard let index = barsModel.bars.firstIndex(where: { cdYelpBusiness in
+		guard let index = self.barsViewModel.currentBars.firstIndex(where: { cdYelpBusiness in
 			cdYelpBusiness.id == annotation.id
 		}) else { return }
 		collectionView.show()

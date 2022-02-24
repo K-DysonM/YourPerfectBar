@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B216FBD927C650D800754D69 /* SearchResultsUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B216FBD827C650D800754D69 /* SearchResultsUIView.swift */; };
+		B22521E127C756FE006A4C4A /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22521E027C756FE006A4C4A /* HomeViewController.swift */; };
+		B22521E427C75852006A4C4A /* QwitcherGrypen-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B22521E327C75852006A4C4A /* QwitcherGrypen-Regular.ttf */; };
 		B233FB0527B76C5C00EAFA97 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233FB0427B76C5C00EAFA97 /* SearchView.swift */; };
 		B233FB0727B81CF800EAFA97 /* SearchBarReceiverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233FB0627B81CF800EAFA97 /* SearchBarReceiverProtocol.swift */; };
 		B233FBB127BB520000EAFA97 /* Business.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233FBB027BB520000EAFA97 /* Business.swift */; };
@@ -17,7 +19,7 @@
 		B233FBDB27BD712B00EAFA97 /* DrawClearUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B233FBDA27BD712B00EAFA97 /* DrawClearUIView.swift */; };
 		B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCD127A4538800E37C05 /* AppDelegate.swift */; };
 		B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCD327A4538800E37C05 /* SceneDelegate.swift */; };
-		B286BCD627A4538800E37C05 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCD527A4538800E37C05 /* ViewController.swift */; };
+		B286BCD627A4538800E37C05 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCD527A4538800E37C05 /* ListViewController.swift */; };
 		B286BCD927A4538800E37C05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B286BCD727A4538800E37C05 /* Main.storyboard */; };
 		B286BCDB27A4538A00E37C05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B286BCDA27A4538A00E37C05 /* Assets.xcassets */; };
 		B286BCDE27A4538A00E37C05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B286BCDC27A4538A00E37C05 /* LaunchScreen.storyboard */; };
@@ -28,7 +30,6 @@
 		B286BCFB27A4E7DD00E37C05 /* BarCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */; };
 		B286BCFD27A50EA300E37C05 /* BarMKAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */; };
 		B286BD0727A5CEF200E37C05 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */; };
-		B286BD0927A5CF2200E37C05 /* BarsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0827A5CF2200E37C05 /* BarsModel.swift */; };
 		B286BD0D27A7AE8700E37C05 /* DrawMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */; };
 		B286BDDF27AAFB6F00E37C05 /* MapKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */; };
 		B286BE3827AC344100E37C05 /* BarsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B286BE3727AC344100E37C05 /* BarsCollectionView.swift */; };
@@ -42,6 +43,8 @@
 		3D05FDADB564DEF38A86D257 /* Pods-YourPerfectBar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourPerfectBar.release.xcconfig"; path = "Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar.release.xcconfig"; sourceTree = "<group>"; };
 		9D8DC50200897EDBC3610282 /* Pods-YourPerfectBar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourPerfectBar.debug.xcconfig"; path = "Target Support Files/Pods-YourPerfectBar/Pods-YourPerfectBar.debug.xcconfig"; sourceTree = "<group>"; };
 		B216FBD827C650D800754D69 /* SearchResultsUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsUIView.swift; sourceTree = "<group>"; };
+		B22521E027C756FE006A4C4A /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		B22521E327C75852006A4C4A /* QwitcherGrypen-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "QwitcherGrypen-Regular.ttf"; sourceTree = "<group>"; };
 		B233FB0427B76C5C00EAFA97 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		B233FB0627B81CF800EAFA97 /* SearchBarReceiverProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarReceiverProtocol.swift; sourceTree = "<group>"; };
 		B233FBB027BB520000EAFA97 /* Business.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Business.swift; sourceTree = "<group>"; };
@@ -52,7 +55,7 @@
 		B286BCCE27A4538800E37C05 /* YourPerfectBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourPerfectBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B286BCD127A4538800E37C05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B286BCD327A4538800E37C05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B286BCD527A4538800E37C05 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B286BCD527A4538800E37C05 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		B286BCD827A4538800E37C05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B286BCDA27A4538A00E37C05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B286BCDD27A4538A00E37C05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -64,7 +67,6 @@
 		B286BCF927A4E7DD00E37C05 /* BarCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BarCollectionViewCell.xib; sourceTree = "<group>"; };
 		B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarMKAnnotation.swift; sourceTree = "<group>"; };
 		B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
-		B286BD0827A5CF2200E37C05 /* BarsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarsModel.swift; sourceTree = "<group>"; };
 		B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawMapViewController.swift; sourceTree = "<group>"; };
 		B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapKit+Extensions.swift"; sourceTree = "<group>"; };
 		B286BE3727AC344100E37C05 /* BarsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarsCollectionView.swift; sourceTree = "<group>"; };
@@ -101,6 +103,26 @@
 				3D05FDADB564DEF38A86D257 /* Pods-YourPerfectBar.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		B216FBDA27C72D9500754D69 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				B286BCF227A493C600E37C05 /* BarDetailViewController.swift */,
+				B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */,
+				B286BCF427A49FCE00E37C05 /* MapViewController.swift */,
+				B286BCD527A4538800E37C05 /* ListViewController.swift */,
+				B22521E027C756FE006A4C4A /* HomeViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		B22521E227C75852006A4C4A /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				B22521E327C75852006A4C4A /* QwitcherGrypen-Regular.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		B233FBB227BB6D5300EAFA97 /* ViewModel */ = {
@@ -140,21 +162,19 @@
 		B286BCD027A4538800E37C05 /* YourPerfectBar */ = {
 			isa = PBXGroup;
 			children = (
+				B22521E227C75852006A4C4A /* Fonts */,
 				B233FBD727BCD6AE00EAFA97 /* App */,
 				B233FBB227BB6D5300EAFA97 /* ViewModel */,
 				B286BE6627AF1B1F00E37C05 /* Model */,
 				B286BE6527AF1AB000E37C05 /* View */,
+				B216FBDA27C72D9500754D69 /* ViewControllers */,
 				B286BCD127A4538800E37C05 /* AppDelegate.swift */,
 				B286BCD327A4538800E37C05 /* SceneDelegate.swift */,
-				B286BCD527A4538800E37C05 /* ViewController.swift */,
 				B286BCD727A4538800E37C05 /* Main.storyboard */,
 				B286BCDA27A4538A00E37C05 /* Assets.xcassets */,
 				B286BCDC27A4538A00E37C05 /* LaunchScreen.storyboard */,
 				B286BCDF27A4538A00E37C05 /* Info.plist */,
-				B286BCF227A493C600E37C05 /* BarDetailViewController.swift */,
-				B286BCF427A49FCE00E37C05 /* MapViewController.swift */,
 				B286BD0627A5CEF200E37C05 /* CustomTabBarController.swift */,
-				B286BD0C27A7AE8700E37C05 /* DrawMapViewController.swift */,
 				B286BDDE27AAFB6F00E37C05 /* MapKit+Extensions.swift */,
 				B286BE3927AC36B800E37C05 /* BarCollectionDataSource.swift */,
 				B233FB0627B81CF800EAFA97 /* SearchBarReceiverProtocol.swift */,
@@ -183,7 +203,6 @@
 			isa = PBXGroup;
 			children = (
 				B286BCFC27A50EA300E37C05 /* BarMKAnnotation.swift */,
-				B286BD0827A5CF2200E37C05 /* BarsModel.swift */,
 				B233FBB027BB520000EAFA97 /* Business.swift */,
 			);
 			path = Model;
@@ -251,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B286BCDE27A4538A00E37C05 /* LaunchScreen.storyboard in Resources */,
+				B22521E427C75852006A4C4A /* QwitcherGrypen-Regular.ttf in Resources */,
 				B286BCDB27A4538A00E37C05 /* Assets.xcassets in Resources */,
 				B286BCFB27A4E7DD00E37C05 /* BarCollectionViewCell.xib in Resources */,
 				B286BCD927A4538800E37C05 /* Main.storyboard in Resources */,
@@ -343,7 +363,7 @@
 				B286BE3A27AC36B800E37C05 /* BarCollectionDataSource.swift in Sources */,
 				B286BCF127A4754700E37C05 /* BarTableViewCell.swift in Sources */,
 				B233FBDB27BD712B00EAFA97 /* DrawClearUIView.swift in Sources */,
-				B286BCD627A4538800E37C05 /* ViewController.swift in Sources */,
+				B286BCD627A4538800E37C05 /* ListViewController.swift in Sources */,
 				B286BD0727A5CEF200E37C05 /* CustomTabBarController.swift in Sources */,
 				B286BCFA27A4E7DD00E37C05 /* BarCollectionViewCell.swift in Sources */,
 				B286BCD227A4538800E37C05 /* AppDelegate.swift in Sources */,
@@ -351,6 +371,7 @@
 				B286BDDF27AAFB6F00E37C05 /* MapKit+Extensions.swift in Sources */,
 				B286BCF327A493C600E37C05 /* BarDetailViewController.swift in Sources */,
 				B286BE3827AC344100E37C05 /* BarsCollectionView.swift in Sources */,
+				B22521E127C756FE006A4C4A /* HomeViewController.swift in Sources */,
 				B233FB0527B76C5C00EAFA97 /* SearchView.swift in Sources */,
 				B233FBB627BB6ECF00EAFA97 /* LocationServiceProtocol.swift in Sources */,
 				B286BCD427A4538800E37C05 /* SceneDelegate.swift in Sources */,
@@ -360,7 +381,6 @@
 				B286BE6827AF1B9B00E37C05 /* BarsMapView.swift in Sources */,
 				B233FBD927BCD6C400EAFA97 /* Config.swift in Sources */,
 				B286BCF527A49FCE00E37C05 /* MapViewController.swift in Sources */,
-				B286BD0927A5CF2200E37C05 /* BarsModel.swift in Sources */,
 				B216FBD927C650D800754D69 /* SearchResultsUIView.swift in Sources */,
 				B233FBB427BB6D8000EAFA97 /* BarsViewModel.swift in Sources */,
 				B233FB0727B81CF800EAFA97 /* SearchBarReceiverProtocol.swift in Sources */,
